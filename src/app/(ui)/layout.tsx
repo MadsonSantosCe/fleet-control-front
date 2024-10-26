@@ -1,5 +1,7 @@
 import { ReactNode } from "react";
-import Menu from "../components/ui/menu";
+import NavItem from "../components/nav/nav-item";
+import { faBox, faTruck, faUser } from "@fortawesome/free-solid-svg-icons";
+
 type Props = {
     children: ReactNode
 }
@@ -9,16 +11,32 @@ export default function Layouit({ children }: Props) {
     return (
         <main className="flex min-h-screen bg-gray-100">
             <aside className="bg-white w-64 p-6 border-r border-gray-200">
-                {/* Logo e título */}
-                <div className="flex items-center space-x-2 mb-6 border-b border-gray-200 py-6">                    
-                    <span className="text-lg font-semibold">Dashboard</span>                    
+
+                <div className="flex items-center space-x-2 mb-6 border-b border-gray-200 py-6">
+                    <span className="text-lg font-semibold">Dashboard</span>
+                </div>
+                <div className="flex-1 mt-6">
+                    <nav className="mt-11">
+                    <NavItem 
+                        href="/home"
+                        icon={faBox}
+                        label="Entregas"             
+                    />
+                    <NavItem 
+                        href="/truck"
+                        icon={faTruck}
+                        label="Caminhôes"                        
+                    />
+                    <NavItem 
+                        href="/driver"
+                        icon={faUser}
+                        label="Motoristas"                        
+                    />
+                    </nav>
                 </div>
 
-                {/* Links do menu */}
-                <Menu />
             </aside>
-
-            {/* Seção de conteúdo principal */}
+        
             <section className="flex-1 p-8 bg-white mt-4 ml-4 mb-4 rounded-lg shadow-md border border-gray-200">
                 {children}
             </section>
