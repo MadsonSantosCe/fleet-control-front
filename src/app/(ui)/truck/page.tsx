@@ -1,11 +1,10 @@
 "use client"
 
 import Popup from "@/app/components/popup/truck/popup";
-import { fakeTrucks } from "@/data/truck";
 import { faEdit } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
-import TruckService from '@/features/truck/services/truckService';
+import { getTrucks } from '@/services/truck';
 import { Truck } from "@/types/truck";
 
 
@@ -14,12 +13,12 @@ export default function Drivers() {
     const [trucks, setTrucks] = useState<Truck[]>([]);
 
     useEffect(() => {
-        const getDrivers = async () => {
-            const response = await TruckService.getAllTrucks();
+        const fetchApi = async () => {
+            const response = await getTrucks();
             setTrucks(response);
         }
 
-        getDrivers();
+        fetchApi();
     }, []);
 
     const handleSave = () => {
@@ -48,7 +47,7 @@ export default function Drivers() {
             <hr className="border-gray-200 mb-6" />
 
             <div className="space-y-4 text-sm">
-                {trucks.map((truck) => (
+                {trucks.length > 0 && trucks.map((truck) => (
                     <div key={truck.id} className="flex items-center justify-between p-4 px-16 border-b border-gray-200">
                         <div className="flex items-center space-x-4">
                             <div>
@@ -61,6 +60,7 @@ export default function Drivers() {
                         </button>
                     </div>
                 ))}
+                <div>{trucks.length === 0 && <h3 className="text-center justify-center items-center py4 font-semibold">Nada por aqui, cadastre um novo caminhão</h3>}</div>
             </div>
 
             {isPopupOpen && (

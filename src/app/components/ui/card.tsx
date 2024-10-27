@@ -1,14 +1,12 @@
-import { promises } from "dns";
-
 type Props = {
     title: string;
     value: string;
     percentage: string
-    period: string 
+    period: string
     percentageColor: number
 }
 
-export default function Card({title, value, percentage, period, percentageColor}: Props) {
+export default function Card({ title, value, percentage, period, percentageColor }: Props) {
     return (
         <div className="bg-white p-4">
             <h3 className="text-sm font-semibold text-gray-600">{title}</h3>

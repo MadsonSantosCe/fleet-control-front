@@ -2,7 +2,7 @@
 
 import PopupAdd from "@/app/components/popup/driver/popup";
 import { useEffect, useState } from "react";
-import DriverService from '@/features/driver/sevices/driverService';
+import { getDrivers } from '@/services/driver';
 import { Driver } from "@/types/driver";
 
 export default function Trucks() {
@@ -11,12 +11,12 @@ export default function Trucks() {
     const [drivers, setDrivers] = useState<Driver[]>([]);
 
     useEffect(() => {
-        const getDrivers = async () => {
-            const response = await DriverService.getAllDrivers();
+        const fetchApi = async () => {
+            const response = await getDrivers()
             setDrivers(response);
         }
 
-        getDrivers();
+        fetchApi();
     }, []);
 
 
@@ -50,7 +50,7 @@ export default function Trucks() {
             <hr className="border-gray-200 mb-10" />
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-                {drivers.map((driver) => (
+                {drivers.length > 0 && drivers.map((driver) => (
                     <div key={driver.id} className="flex flex-col items-center text-center space-y-2">
                         <button
                             className="focus:outline-none">
@@ -64,6 +64,7 @@ export default function Trucks() {
                         <p className="text-sm text-gray-500">Licença: {driver.license}</p>
                     </div>
                 ))}
+                <div>{drivers.length === 0 && <h3 className="text-center justify-center items-center py4 font-semibold">Nada por aqui, cadastre um nofo motorista</h3>}</div>
             </div>
 
             {isPopupAddOpen && (

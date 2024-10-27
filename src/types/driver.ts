@@ -3,3 +3,8 @@ export type Driver = {
     name: string,
     license: string,
 }
+
+export type DriverRequest = {
+    name: string,
+    license: string,
+}

@@ -1,23 +1,23 @@
 "use client"
 
 import { Delivery } from "@/types/delivery";
-import { faEdit, faEye } from "@fortawesome/free-regular-svg-icons";
+import { faEye } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import DeliveryService from '@/features/delivery/services/deliveryService';
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { getDeliveries } from '@/services/delivery';
 
 export default function Deliveries() {
-    
+
     const [deliveries, setDeliveries] = useState<Delivery[]>([]);
 
     useEffect(() => {
-        const getDeliveries = async () => {
-            const response = await DeliveryService.getAllDeliveries();
+        const fetchApi = async () => {
+            const response = await getDeliveries();
             setDeliveries(response);
         }
 
-        getDeliveries();
+        fetchApi();
     }, []);
 
     return (
@@ -30,7 +30,7 @@ export default function Deliveries() {
                     Cadastrar Entrega
                 </button>
             </div>
-            
+
             <div className="overflow-x-auto">
                 <table className="min-w-full text-sm mt-6">
                     <thead>
@@ -44,7 +44,7 @@ export default function Deliveries() {
                         </tr>
                     </thead>
                     <tbody>
-                        {deliveries.map((delivery) => (
+                        {deliveries.length > 0 && deliveries.map((delivery) => (
                             <tr key={delivery.id} className="hover:bg-gray-50 border-b border-gray-200">
                                 <td className="p-4 border-b border-gray-200">US${delivery.value.toLocaleString()}</td>
                                 <td className="p-4 border-b border-gray-200">{delivery.type}</td>
@@ -64,6 +64,7 @@ export default function Deliveries() {
                                 </td>
                             </tr>
                         ))}
+                        <div>{deliveries.length === 0 && <h3 className="text-center justify-center items-center py4 font-semibold">Nada por aqui, cadastre uma nova entrega</h3>}</div>
                     </tbody>
                 </table>
 

@@ -18,31 +18,31 @@ export default function Layouit({ children }: Props) {
                 </div>
                 <div className="flex-1 mt-6">
                     <nav className="mt-11">
-                    <NavItem 
-                        href="/home"
-                        icon={faHome}
-                        label="Início"             
-                    />
-                    <NavItem 
-                        href="/delivery"
-                        icon={faBox}
-                        label="Entregas"             
-                    />  
-                    <NavItem 
-                        href="/truck"
-                        icon={faTruck}
-                        label="Caminhôes"                        
-                    />
-                    <NavItem 
-                        href="/driver"
-                        icon={faUser}
-                        label="Motoristas"                        
-                    />                   
+                        <NavItem
+                            href="/home"
+                            icon={faHome}
+                            label="Início"
+                        />
+                        <NavItem
+                            href="/delivery"
+                            icon={faBox}
+                            label="Entregas"
+                        />
+                        <NavItem
+                            href="/truck"
+                            icon={faTruck}
+                            label="Caminhôes"
+                        />
+                        <NavItem
+                            href="/driver"
+                            icon={faUser}
+                            label="Motoristas"
+                        />
                     </nav>
                 </div>
 
             </aside>
-        
+
             <section className="flex-1 p-8 bg-white mt-4 ml-4 mb-4 rounded-lg shadow-md border border-gray-200">
                 {children}
             </section>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import Input from '../../ui/input';
 import { redirect } from 'next/navigation';
+import { Input } from '../../ui/Input';
 
 type Props = {
   onClose: () => void;
@@ -27,16 +27,16 @@ export default function Popup({ onClose, onSave }: Props) {
           <Input
             value={modelField}
             placeholder="Modelo do veículo"
-            onChange={t => setModelField(t)}
+            onChange={e => setModelField(e.target.value)}
           />
         </div>
 
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700"></label>
-          <Input            
+          <Input
             value={licensePlateField}
             placeholder="Placa do veículo"
-            onChange={t => setLicensePlateField(t)}
+            onChange={e => setLicensePlateField(e.target.value)}
           />
         </div>
 

@@ -3,3 +3,8 @@ export type Truck = {
     licensePlate: string,
     model: string,
 }
+
+export type TruckRequest = {
+    licensePlate: string,
+    model: string,
+}
