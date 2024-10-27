@@ -1,30 +1,36 @@
+"use client"
+
+import Popup from "@/app/components/popup/truck/popup";
 import { fakeTrucks } from "@/data/truck";
 import { faEdit } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
-const trucks = fakeTrucks;
+import { useState } from "react";
 
 export default function Drivers() {
+
+    const [isPopupOpen, setIsPopupOpen] = useState(false);
+    const trucks = fakeTrucks
+
+    const handleSave = () => {
+        setIsPopupOpen(false);
+    };
+
+    const handleCancel = () => {
+        setIsPopupOpen(false);
+    };
+
     return (
         <div className="min-h-full flex-1 p-8 bg-white mx-4 sm:mx-8 md:mx-12 my-4 rounded-lg">
-            <h2 className="text-2xl font-semibold mb-8">Caminhões</h2>
 
-            <div className="flex justify-between items-center mb-6">
+            <div className="flex justify-between items-center mb-8">
                 <div className="flex items-center space-x-4">
-                    <input
-                        type="text"
-                        placeholder="Buscar motoristas..."
-                        className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none"
-                    />
-                    <select className="border border-gray-300 rounded-md p-2 text-gray-700">
-                        <option>Ordenar por modelo</option>
-                        <option>Ordenar por placa</option>
-                    </select>
+                    <h2 className="text-2xl font-semibold mb-8">Caminhões</h2>
                 </div>
                 <button
+                    onClick={() => setIsPopupOpen(true)}
                     className="bg-black text-white text-sm px-2 py-2 rounded-lg hover:bg-gray-800 transition duration-200"
                 >
-                    Criar Caminhão
+                    Cadastrar Veículo
                 </button>
             </div>
 
@@ -45,6 +51,10 @@ export default function Drivers() {
                     </div>
                 ))}
             </div>
+
+            {isPopupOpen && (
+                <Popup onClose={handleCancel} onSave={handleSave} />
+            )}
         </div>
     );
 }

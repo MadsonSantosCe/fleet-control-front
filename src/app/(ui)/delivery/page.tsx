@@ -13,7 +13,7 @@ export default function Deliveries() {
                 <button
                     className="bg-black text-white text-sm px-2 py-2 rounded-lg hover:bg-gray-800 transition duration-200"
                 >
-                    Criar Entrega
+                    Cadastrar Entrega
                 </button>
             </div>
             

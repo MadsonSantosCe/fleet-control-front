@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import NavItem from "../components/nav/nav-item";
+import NavItem from "../components/ui/nav-item";
 import { faBox, faHome, faTruck, faUser } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 
