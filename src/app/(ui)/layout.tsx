@@ -27,17 +27,17 @@ export default function Layouit({ children }: Props) {
                         href="/delivery"
                         icon={faBox}
                         label="Entregas"             
-                    />                    
-                    <NavItem 
-                        href="/driver"
-                        icon={faUser}
-                        label="Motoristas"                        
-                    />
+                    />  
                     <NavItem 
                         href="/truck"
                         icon={faTruck}
                         label="Caminhôes"                        
-                    />                    
+                    />
+                    <NavItem 
+                        href="/driver"
+                        icon={faUser}
+                        label="Motoristas"                        
+                    />                   
                     </nav>
                 </div>
 

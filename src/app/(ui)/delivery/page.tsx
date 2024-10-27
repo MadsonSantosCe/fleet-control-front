@@ -1,6 +1,7 @@
 import { fakeDeliveries } from "@/data/delivery";
-import { faEdit } from "@fortawesome/free-regular-svg-icons";
+import { faEdit, faEye } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Link from "next/link";
 
 const deliveries = fakeDeliveries
 
@@ -39,12 +40,13 @@ export default function Deliveries() {
                                     {delivery.insurance && <span className="text-green-600 font-semibold">Insured</span>}
                                 </td>
                                 <td className="p-4 border-b pl-8 border-gray-200 flex">
-                                    <button
+                                    <Link
+                                        href={'/delivery-details'}
                                         className="text-gray-500 hover:text-gray-900"
                                         aria-label="Ver detalhes"
                                     >
-                                        <FontAwesomeIcon icon={faEdit} />
-                                    </button>
+                                        <FontAwesomeIcon icon={faEye} />
+                                    </Link>
                                 </td>
                             </tr>
                         ))}

@@ -21,7 +21,7 @@ export default function Trucks() {
                     </select>
                 </div>
                 <button
-                    className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800 transition duration-200"
+                    className="bg-black text-white text-sm px-2 py-2 rounded-lg hover:bg-gray-800 transition duration-200"
                 >
                     Criar Motorista
                 </button>
