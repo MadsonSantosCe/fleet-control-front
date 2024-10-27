@@ -1,24 +1,33 @@
 "use client"
 
 import PopupAdd from "@/app/components/popup/driver/popup";
-import { fakeDrivers } from "@/data/driver";
-import { useState } from "react";
-
+import { useEffect, useState } from "react";
+import DriverService from '@/features/driver/sevices/driverService';
+import { Driver } from "@/types/driver";
 
 export default function Trucks() {
 
     const [isPopupAddOpen, setIsPopupAddOpen] = useState(false);
+    const [drivers, setDrivers] = useState<Driver[]>([]);
 
-    const drivers = fakeDrivers
+    useEffect(() => {
+        const getDrivers = async () => {
+            const response = await DriverService.getAllDrivers();
+            setDrivers(response);
+        }
+
+        getDrivers();
+    }, []);
+
 
     const handleSave = () => {
-        if(isPopupAddOpen){
+        if (isPopupAddOpen) {
             setIsPopupAddOpen(false);
         }
     };
 
     const handleCancel = () => {
-        if(isPopupAddOpen){
+        if (isPopupAddOpen) {
             setIsPopupAddOpen(false);
         }
     };

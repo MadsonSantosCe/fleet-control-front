@@ -7,7 +7,7 @@ type Props = {
   onSave: () => void;
 };
 
-export default function PopupAdd({ onClose, onSave }: Props) {
+export default function Popup({ onClose, onSave }: Props) {
 
   const [nameField, setNameField] = useState('');
   const [licenseField, setLicenseField] = useState('');
@@ -20,7 +20,7 @@ export default function PopupAdd({ onClose, onSave }: Props) {
   return (
     <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
       <div className="bg-white rounded-lg p-6 w-1/4 shadow-lg">
-        <h2 className="text-xl font-semibold mb-10">"Novo Motorista</h2>
+        <h2 className="text-xl font-semibold mb-10">Novo Motorista</h2>
 
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700"></label>

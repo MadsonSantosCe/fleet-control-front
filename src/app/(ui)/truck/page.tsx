@@ -4,12 +4,23 @@ import Popup from "@/app/components/popup/truck/popup";
 import { fakeTrucks } from "@/data/truck";
 import { faEdit } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import TruckService from '@/features/truck/services/truckService';
+import { Truck } from "@/types/truck";
+
 
 export default function Drivers() {
-
     const [isPopupOpen, setIsPopupOpen] = useState(false);
-    const trucks = fakeTrucks
+    const [trucks, setTrucks] = useState<Truck[]>([]);
+
+    useEffect(() => {
+        const getDrivers = async () => {
+            const response = await TruckService.getAllTrucks();
+            setTrucks(response);
+        }
+
+        getDrivers();
+    }, []);
 
     const handleSave = () => {
         setIsPopupOpen(false);

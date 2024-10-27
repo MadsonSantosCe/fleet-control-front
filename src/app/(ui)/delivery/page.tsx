@@ -1,11 +1,25 @@
-import { fakeDeliveries } from "@/data/delivery";
+"use client"
+
+import { Delivery } from "@/types/delivery";
 import { faEdit, faEye } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import DeliveryService from '@/features/delivery/services/deliveryService';
 import Link from "next/link";
-
-const deliveries = fakeDeliveries
+import { useEffect, useState } from "react";
 
 export default function Deliveries() {
+    
+    const [deliveries, setDeliveries] = useState<Delivery[]>([]);
+
+    useEffect(() => {
+        const getDeliveries = async () => {
+            const response = await DeliveryService.getAllDeliveries();
+            setDeliveries(response);
+        }
+
+        getDeliveries();
+    }, []);
+
     return (
         <div className="min-h-full flex-1 p-8 bg-white mx-8 sm:mx-8 md:mx-12 my-4 rounded-lg">
             <div className="flex justify-between items-center mb-8">
