@@ -26,3 +26,14 @@ export interface Truck {
     driver: Driver;
   }
   
+  export interface DeliveryRequest {
+    type: string;
+    value: number;
+    destination: string;
+    deliveryTime: string;
+    truckId: number;
+    driverId: number;
+    insurance: boolean;
+    dangerous: boolean;
+    valuable: boolean;
+}

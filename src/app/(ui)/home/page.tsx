@@ -1,9 +1,9 @@
 import Card from "@/app/components/ui/card";
-import { fakePartialDeliveries } from "@/data/parcialDelivery";
+import { fakeDeliveries } from "@/data/delivery";
 import { faEye } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const deliveries = fakePartialDeliveries
+const deliveries = fakeDeliveries
 
 export default function Home() {
   return (
@@ -66,12 +66,12 @@ export default function Home() {
             <tbody>
               {deliveries.map((delivery) => (
                 <tr key={delivery.id} className="hover:bg-gray-50 border-b border-gray-200">
-                  <td className="p-4 border-b border-gray-200">{delivery.deliverydate}</td>
+                  <td className="p-4 border-b border-gray-200">{delivery.deliveryTime}</td>
                   <td className="p-4 border-b border-gray-200">{delivery.type}</td>
                   <td className="p-4 border-b border-gray-200">{delivery.destination}</td>
                   <td className="p-4 border-b border-gray-200">{delivery.value}</td>
                   <td className="p-4 border-b border-gray-200">
-                    <span className="text-green-600 font-semibold">{delivery.status}</span>
+                    <span className="text-green-600 font-semibold">{delivery.insurance}</span>
                   </td>
                   <td className="p-4 border-b pl-9 border-gray-200 flex">
                     <button
