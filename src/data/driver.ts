@@ -1,5 +1,7 @@
+import { Driver } from "@/types/driver";
+
 // /data/fakeDrivers.ts
-export const fakeDrivers = [
+export const fakeDrivers: Driver[] = [
     {
       id: 1,
       name: "Emanuel Aline Laura da Cruz",
@@ -24,6 +26,21 @@ export const fakeDrivers = [
       id: 5,
       name: "Antônio Pereira silva",
       license: "48957392012",
-    },
+    },    
+    {
+      id: 6,
+      name: "Antônio Pereira silva",
+      license: "48957392012",
+    },    
+    {
+      id: 7,
+      name: "Antônio Pereira silva",
+      license: "48957392012",
+    },    
+    {
+      id: 8,
+      name: "Antônio Pereira silva",
+      license: "48957392012",
+    },  
   ];
   

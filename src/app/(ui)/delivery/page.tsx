@@ -25,7 +25,7 @@ export default function Deliveries() {
                             <th className="p-4 border-b border-gray-200">Destination</th>
                             <th className="p-4 border-b border-gray-200">Value</th>
                             <th className="p-4 border-b border-gray-200">Status</th>
-                            <th className="p-4 border-b border-gray-200">Detalhes</th>
+                            <th className="p-4 border-b border-gray-200">Ediitar</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -38,7 +38,7 @@ export default function Deliveries() {
                                 <td className="p-4 border-b border-gray-200">
                                     {delivery.insurance && <span className="text-green-600 font-semibold">Insured</span>}
                                 </td>
-                                <td className="p-4 border-b pl-9 border-gray-200 flex">
+                                <td className="p-4 border-b pl-8 border-gray-200 flex">
                                     <button
                                         className="text-gray-500 hover:text-gray-900"
                                         aria-label="Ver detalhes"
