@@ -1,5 +1,6 @@
 import api from "@/services/api";
 import { Driver } from "@/types/driver";
+import axios, { AxiosError } from 'axios';
 
 const DRIVER_API = '/driver';
 

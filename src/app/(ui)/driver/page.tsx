@@ -6,13 +6,16 @@ import { Driver } from "@/types/driver";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
 import Modal from "@/app/components/popup/driver/modal";
+import { useRouter } from 'next/navigation';
 
 export default function Trucks() {
 
     const [isPopupAddOpen, setIsPopupOpen] = useState(false);
     const [drivers, setDrivers] = useState<Driver[]>([]);
 
-    useEffect(() => {        
+    const router = useRouter();
+
+    useEffect(() => {
         fetchApi();
     }, []);
 
@@ -22,15 +25,12 @@ export default function Trucks() {
     }
 
     const handleSave = () => {
-        if (isPopupAddOpen) {
-            setIsPopupOpen(false);
-        }
+        setIsPopupOpen(false);
     };
 
     const handleCancel = () => {
-        if (isPopupAddOpen) {
-            setIsPopupOpen(false);
-        }
+        setIsPopupOpen(false);
+        router.refresh();
     };
 
     return (
@@ -65,9 +65,9 @@ export default function Trucks() {
                         <p className="text-sm text-gray-500">Licença: {driver.license}</p>
 
                         <div className="flex space-x-8 my-8">
-                            <button 
-                            onClick={() => setIsPopupOpen(true)}
-                            className="text-gray-500 hover:text-gray-700">
+                            <button
+                                onClick={() => setIsPopupOpen(true)}
+                                className="text-gray-500 hover:text-gray-700">
                                 <FontAwesomeIcon icon={faEdit} className="size-4" />
                             </button>
 
@@ -81,7 +81,7 @@ export default function Trucks() {
             </div>
 
             {isPopupAddOpen && (
-                <Modal onClose={handleCancel} onSave={handleSave}/>
+                <Modal onClose={handleCancel} onSave={handleSave} />
             )}
         </div>
     );
