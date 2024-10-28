@@ -69,14 +69,14 @@ export default function Deliveries() {
                                     </td>
 
                                     <td className="p-4 border-b pl-8 border-gray-200 flex">
-                                        <Link
-                                            href={'/delivery-details'}
-                                            className="text-gray-500 hover:text-gray-900"
-                                            aria-label="Ver detalhes"
-                                        >
-                                            <FontAwesomeIcon icon={faEye} />
-                                        </Link>
+                                    <Link
+                                        href={`/delivery/${delivery.id}`}
+                                        className="text-gray-500 hover:text-gray-900"
+                                        aria-label="Ver detalhes">
+                                        <FontAwesomeIcon icon={faEye} />
+                                    </Link>
                                     </td>
+                                    
                                 </tr>
                             ))
                         ) : (

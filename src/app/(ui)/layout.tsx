@@ -14,15 +14,10 @@ export default function Layouit({ children }: Props) {
             <aside className="bg-white w-64 p-6 border-r border-gray-200">
 
                 <div className="flex items-center space-x-2 mb-6 border-b border-gray-200 py-6">
-                    <Link href={'/'}><span className="text-lg font-semibold">Dashboard</span></Link>
+                    <Link href={'/delivery'}><span className="text-lg font-semibold">Dashboard</span></Link>
                 </div>
                 <div className="flex-1 mt-6">
                     <nav className="mt-11">
-                        <NavItem
-                            href="/home"
-                            icon={faHome}
-                            label="Início"
-                        />
                         <NavItem
                             href="/delivery"
                             icon={faBox}
