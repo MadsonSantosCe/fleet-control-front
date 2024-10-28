@@ -24,5 +24,9 @@ export function getAllErrorMessages(error: any): string[] {
         messages.push(errorResponse.error.message);
     }
 
+    if (messages.length === 0) {
+        messages.push("Erro desconhecido");
+    }
+
     return messages;
 }

@@ -1,21 +1,21 @@
-"use client"
+"use client";
 
-import { Delivery } from "@/types/delivery";
+import { Delivery, DeliveryType, Destinations } from "@/types/delivery";
 import { faEye } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { getDeliveries } from '@/services/delivery';
+import { formatDate } from "@/utils/stringUtils";
 
 export default function Deliveries() {
-
     const [deliveries, setDeliveries] = useState<Delivery[]>([]);
 
     useEffect(() => {
         const fetchApi = async () => {
             const response = await getDeliveries();
             setDeliveries(response);
-        }
+        };
 
         fetchApi();
     }, []);
@@ -35,38 +35,59 @@ export default function Deliveries() {
                 <table className="min-w-full text-sm mt-6">
                     <thead>
                         <tr className="text-left text-gray-500">
-                            <th className="p-4 border-b border-gray-200">Delivery Date</th>
-                            <th className="p-4 border-b border-gray-200">Type</th>
-                            <th className="p-4 border-b border-gray-200">Destination</th>
-                            <th className="p-4 border-b border-gray-200">Value</th>
+                            <th className="p-4 border-b border-gray-200">Data prevista</th>
+                            <th className="p-4 border-b border-gray-200">Tipo</th>
+                            <th className="p-4 border-b border-gray-200">Destino</th>
+                            <th className="p-4 border-b border-gray-200">Valor</th>
                             <th className="p-4 border-b border-gray-200">Status</th>
-                            <th className="p-4 border-b border-gray-200">Ediitar</th>
+                            <th className="p-4 border-b border-gray-200">Visualizar</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {deliveries.length > 0 && deliveries.map((delivery) => (
-                            <tr key={delivery.id} className="hover:bg-gray-50 border-b border-gray-200">
-                                <td className="p-4 border-b border-gray-200">US${delivery.value.toLocaleString()}</td>
-                                <td className="p-4 border-b border-gray-200">{delivery.type}</td>
-                                <td className="p-4 border-b border-gray-200">{delivery.destination}</td>
-                                <td className="p-4 border-b border-gray-200">{delivery.value}</td>
-                                <td className="p-4 border-b border-gray-200">
-                                    {delivery.insurance && <span className="text-green-600 font-semibold">Insured</span>}
-                                </td>
-                                <td className="p-4 border-b pl-8 border-gray-200 flex">
-                                    <Link
-                                        href={'/delivery-details'}
-                                        className="text-gray-500 hover:text-gray-900"
-                                        aria-label="Ver detalhes"
-                                    >
-                                        <FontAwesomeIcon icon={faEye} />
-                                    </Link>
+                        {deliveries.length > 0 ? (
+                            deliveries.map((delivery) => (
+                                <tr key={delivery.id} className="hover:bg-gray-50 border-b border-gray-200">
+                                    <td className="p-4 border-b border-gray-200">
+                                        {formatDate(delivery.deliveryTime)}
+                                    </td>
+                                    <td className="p-4 border-b border-gray-200">{DeliveryType[delivery.type]}</td>
+                                    <td className="p-4 border-b border-gray-200">{Destinations[delivery.destination]}</td>
+                                    <td className="p-4 border-b border-gray-200">R$ {delivery.value.toLocaleString()}</td>
+                                    <td className="p-4 border-b border-gray-200">
+                                        {delivery.insurance && (
+                                            <span className="text-green-600 font-semibold mr-2">Com seguro</span>
+                                        )}
+                                        {delivery.dangerous && (
+                                            <span className="text-red-600 font-semibold mr-2">Perigosa</span>
+                                        )}
+                                        {delivery.valuable && (
+                                            <span className="text-yellow-600 font-semibold">Valioso</span>
+                                        )}
+                                        {!delivery.insurance && !delivery.dangerous && !delivery.valuable && (
+                                            <span className="text-gray-500">Padãoo</span>
+                                        )}
+                                    </td>
+
+                                    <td className="p-4 border-b pl-8 border-gray-200 flex">
+                                        <Link
+                                            href={'/delivery-details'}
+                                            className="text-gray-500 hover:text-gray-900"
+                                            aria-label="Ver detalhes"
+                                        >
+                                            <FontAwesomeIcon icon={faEye} />
+                                        </Link>
+                                    </td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan={6} className="text-center py-4 font-semibold text-gray-500">
+                                    Nada por aqui, cadastre uma nova entrega
                                 </td>
                             </tr>
-                        ))}
+                        )}
                     </tbody>
-                </table>                
-                <div>{deliveries.length === 0 && <h3 className="text-center justify-center items-center py4 font-semibold">Nada por aqui, cadastre uma nova entrega</h3>}</div>        
+                </table>
             </div>
         </div>
     );

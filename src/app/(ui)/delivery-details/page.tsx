@@ -1,6 +1,7 @@
 import { faCalendarAlt, faMoneyBill } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
+import { formatDate } from '@/utils/stringUtils';
 
 export default function DeliveryDetails() {
     const delivery = {
@@ -26,12 +27,12 @@ export default function DeliveryDetails() {
         },
     };
 
+    const formattedDate = formatDate(delivery.deliveryTime);
+
     return (
         <div className="p-8 max-w-4xl mx-auto">
             <div className="flex items-center justify-between mb-8">
-                <h1 className="text-2xl font-semibold">
-                    Entrega
-                </h1>
+                <h1 className="text-2xl font-semibold">Entrega</h1>
                 <div className="flex space-x-4">
                     <button
                         className="px-2 py-2 border border-gray-300 text-sm rounded-lg hover:bg-gray-100"
@@ -47,18 +48,17 @@ export default function DeliveryDetails() {
             </div>
 
             <div className="text-gray-600 flex items-center space-x-4 mb-10">
-                <p className="flex items-center space-x-2 text-lg ">
+                <p className="flex items-center space-x-2 text-lg">
                     <FontAwesomeIcon icon={faCalendarAlt} className="size-4 text-gray-500" />
-                    <span>{delivery.deliveryTime}</span>
+                    <span>{formattedDate}</span>
                 </p>
             </div>
 
             <h2 className="text-lg font-semibold mt-4">Detalhes</h2>
-            <div className='border-t border-gray-200 py-8'>
-
+            <div className='border-t border-gray-200 py-6'>
                 <div className="flex items-center justify-between my-4">
                     <span className="text-gray-600 w-1/3">Valor</span>
-                    <span className="font-medium w-2/3 text-left">R$ {delivery.value}</span>
+                    <span className="font-medium w-2/3 text-left">R$ {delivery.value.toLocaleString()}</span>
                 </div>
 
                 <div className="flex items-center justify-between my-4">
@@ -71,14 +71,28 @@ export default function DeliveryDetails() {
                     <span className="font-medium w-2/3 text-left">{delivery.type}</span>
                 </div>
 
+                {/* Status da Entrega: Seguro, Perigoso, Valioso */}
                 <div className="flex items-center justify-between my-4">
-                    <span className="text-gray-600 w-1/3">Seguro</span>
-                    <span className="font-medium w-2/3 text-left">{delivery.insurance ? "Sim" : "Não"}</span>
+                    <span className="text-gray-600 w-1/3">Status</span>
+                    <span className="font-medium w-2/3 text-left">
+                        {delivery.insurance && (
+                            <span className="text-green-600 font-semibold mr-2">Com seguro</span>
+                        )}
+                        {delivery.dangerous && (
+                            <span className="text-red-600 font-semibold mr-2">Perigosa</span>
+                        )}
+                        {delivery.valuable && (
+                            <span className="text-yellow-600 font-semibold">Valioso</span>
+                        )}
+                        {!delivery.insurance && !delivery.dangerous && !delivery.valuable && (
+                            <span className="text-gray-500">Padrão</span>
+                        )}
+                    </span>
                 </div>
             </div>
 
             <h2 className="text-lg font-semibold mb-4">Motorista</h2>
-            <div className='border-t border-gray-200 py-8'>
+            <div className='border-t border-gray-200 py-6'>
                 <div className="flex items-center justify-between my-4">
                     <span className="text-gray-600 w-1/3">Nome</span>
                     <span className="font-medium w-2/3 text-left">{delivery.driver.name}</span>
@@ -90,7 +104,6 @@ export default function DeliveryDetails() {
                 </div>
             </div>
 
-            {/* Seção de Caminhão */}
             <h2 className="text-lg font-semibold mb-4">Caminhão</h2>
             <div className='border-t border-gray-200 py-8'>
                 <div className="flex items-center justify-between my-4">
