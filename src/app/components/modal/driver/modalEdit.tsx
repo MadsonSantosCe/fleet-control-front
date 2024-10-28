@@ -1,37 +1,49 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { Input } from '../../ui/Input';
 import { z } from 'zod';
 import { Driver } from '@/types/driver';
-import { createDriver } from '@/services/driver';
+import { getDriverById, updateDriver } from '@/services/driver';
 import { Toaster, toast } from 'react-hot-toast';
 import { getAllErrorMessages } from '@/utils/erroMenssagehendle';
 
 const schema = z.object({
   nameField: z.string().min(3, { message: 'O nome deve ter pelo menos 3 caracteres' }),
-  licenseField: z
-    .string()
-    .length(11, { message: 'O CPF deve ter exatamente 11 dígitos' })
+  licenseField: z.string().length(11, { message: 'O CPF deve ter exatamente 11 dígitos e apenas números' })
 });
 
 type Props = {
   onClose: () => void;
   onSave: () => void;
+  id: number;
 };
 
-export default function Modal({ onSave, onClose }: Props) {
+export default function ModalEdit({ onSave, onClose, id }: Props) {
 
   const [nameField, setNameField] = useState('');
   const [licenseField, setLicenseField] = useState('');
   const [errors, setErrors] = useState({ nameField: '', licenseField: '' });
-  const [apiError, setApierror] = useState(false);
+  const [apiError, setApiError] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleSave = async () => {
+  useEffect(() => {
+    fetchGetDriverById(id);
+  }, []);
+
+  const fetchGetDriverById = async (id: number) => {
+    const driver = await getDriverById(id);
+    if (driver) {
+      setNameField(driver.name);
+      setLicenseField(driver.license);
+    }
+  };
+
+  const handleUpdate = async () => {
     const resultZod = schema.safeParse({ nameField, licenseField });
-
+  
     if (!resultZod.success) {
       const fieldErrors = resultZod.error.flatten().fieldErrors;
       setErrors({
@@ -39,23 +51,30 @@ export default function Modal({ onSave, onClose }: Props) {
         licenseField: fieldErrors.licenseField ? fieldErrors.licenseField[0] : '',
       });
     } else {
-
+      
       try {
-        const result = await fetchCreateDriver({ id: 1, name: nameField, license: licenseField });
+        await fetchUpdateDriver(id, { id, name: nameField, license: licenseField });
         setErrors({ nameField: '', licenseField: '' });
+        setApiError(false);
+
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
 
       } catch (error) {
         const allMessages = getAllErrorMessages(error);
         allMessages.forEach((msg) => {
-          setApierror(true); 
-          toast.error(`Erro: ${msg}`, { duration: 4000 });         
+          setApiError(true);
+          toast.error(`Erro: ${msg}`, { duration: 4000 });
         });
       }
     }
   };
-
-  const fetchCreateDriver = async (driver: Driver) => {
-    const response = await createDriver(driver);
+  
+  const fetchUpdateDriver = async (id: number, driver: Driver) => {
+    setLoading(true);
+    const response = await updateDriver(id, driver);    
+    setLoading(false);
     return response;
   };
 
@@ -70,11 +89,10 @@ export default function Modal({ onSave, onClose }: Props) {
         </button>
 
         <div>
-          <h2 className="text-xl font-semibold mb-10">Novo Motorista</h2>
+          <h2 className="text-xl font-semibold mb-10">Editar motorista</h2>
           {apiError && <Toaster position="top-center" />}
 
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">Nome do Colaborador</label>
             <Input
               value={nameField}
               placeholder="Digite o nome do colaborador"
@@ -84,7 +102,6 @@ export default function Modal({ onSave, onClose }: Props) {
           </div>
 
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">CPF do Colaborador</label>
             <Input
               value={licenseField}
               placeholder="Digite o CPF do colaborador"
@@ -101,8 +118,9 @@ export default function Modal({ onSave, onClose }: Props) {
               Cancelar
             </button>
             <button
-              onClick={handleSave}
+              onClick={handleUpdate}
               className="px-4 py-2 rounded-md text-white bg-black hover:bg-gray-900"
+              disabled={loading}
             >
               Salvar
             </button>

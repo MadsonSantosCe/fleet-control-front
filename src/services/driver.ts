@@ -27,5 +27,3 @@ export const updateDriver = async (id: number, updatedDriver: Driver) => {
 export const deleteDriver = async (id: number) => {
     await api.delete(`${DRIVER_API}/${id}`);
 }
-
-

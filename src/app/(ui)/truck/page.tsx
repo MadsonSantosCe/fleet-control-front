@@ -5,11 +5,14 @@ import { useEffect, useState } from "react";
 import { getTrucks } from '@/services/truck';
 import { Truck } from "@/types/truck";
 import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
-import Modal from "@/app/components/popup/truck/modal";
+import ModalAdd from "@/app/components/modal/truck/modalAdd";
+import ModalEdit from "@/app/components/modal/truck/modalEdit";
+import ModalDelete from "@/app/components/modal/truck/modelDelete";
 
 
 export default function Drivers() {
-    const [isPopupOpen, setIsPopupOpen] = useState(false);
+    const [popupType, setPopupType] = useState<null | 'add' | 'edit' | 'delete'>(null);    
+    const [isSelected, setIsSelected] = useState<number | null>(null);
     const [trucks, setTrucks] = useState<Truck[]>([]);
 
     useEffect(() => {
@@ -21,12 +24,28 @@ export default function Drivers() {
         fetchApi();
     }, []);
 
+    
+
     const handleSave = () => {
-        setIsPopupOpen(false);
+        setPopupType(null);
     };
 
     const handleCancel = () => {
-        setIsPopupOpen(false);
+        setPopupType(null);
+    };
+
+    const openAddPopup = () => {
+        setPopupType('add');
+    };
+
+    const openEditPopup = (id: number) => {
+        setIsSelected(id);
+        setPopupType('edit');
+    };
+
+    const openDeletePopup = (id: number) => {
+        setIsSelected(id);
+        setPopupType('delete');
     };
 
     return (
@@ -37,7 +56,7 @@ export default function Drivers() {
                     <h2 className="text-2xl font-semibold mb-8">Caminhões</h2>
                 </div>
                 <button
-                    onClick={() => setIsPopupOpen(true)}
+                    onClick={openAddPopup}
                     className="bg-black text-white text-sm px-2 py-2 rounded-lg hover:bg-gray-800 transition duration-200"
                 >
                     Cadastrar Veículo
@@ -56,22 +75,32 @@ export default function Drivers() {
                             </div>
                         </div>
                         <div className="flex space-x-8 px-8">
-                            <button className="text-gray-500 hover:text-gray-700">
+                            <button 
+                            onClick={() => openEditPopup(truck.id)}
+                            className="text-gray-500 hover:text-gray-700">
                                 <FontAwesomeIcon icon={faEdit} className="size-4" />
                             </button>
 
-                            <button className="text-red-500 hover:text-red-700">
+                            <button 
+                            onClick={() => openDeletePopup(truck.id)}
+                            className="text-red-500 hover:text-red-700">
                                 <FontAwesomeIcon icon={faTrash} className="size-4" />
                             </button>
                         </div>
                     </div>
                 ))}
-                <div>{trucks.length === 0 && <h3 className="text-center justify-center items-center py4 font-semibold">Nada por aqui, cadastre um novo caminhão</h3>}</div>
+                <div>{trucks.length === 0 && <h3 className="h-full text-center justify-center items-center py4 font-semibold">Nada por aqui, cadastre um novo caminhão</h3>}</div>
             </div>
 
-            {isPopupOpen && (
-                <Modal onClose={handleCancel} onSave={handleSave} />
+            {popupType === 'add' && (
+                <ModalAdd onClose={handleCancel} onSave={handleSave} />
             )}
+            {popupType === 'edit' && isSelected !== null && (
+                <ModalEdit onClose={handleCancel} onSave={handleSave} id={isSelected} />
+            )}
+            {popupType === 'delete' && isSelected !== null && (
+                <ModalDelete onClose={handleCancel} onSave={handleSave} id={isSelected} />
+            )};
         </div>
     );
 }
