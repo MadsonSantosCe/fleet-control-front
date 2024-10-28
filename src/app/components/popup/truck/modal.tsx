@@ -7,7 +7,7 @@ type Props = {
   onSave: () => void;
 };
 
-export default function Popup({ onClose, onSave }: Props) {
+export default function Modal({ onClose, onSave }: Props) {
 
   const [modelField, setModelField] = useState('');
   const [licensePlateField, setLicensePlateField] = useState('');

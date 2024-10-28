@@ -1,34 +1,35 @@
 "use client"
 
-import PopupAdd from "@/app/components/popup/driver/popup";
 import { useEffect, useState } from "react";
 import { getDrivers } from '@/services/driver';
 import { Driver } from "@/types/driver";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
+import Modal from "@/app/components/popup/driver/modal";
 
 export default function Trucks() {
 
-    const [isPopupAddOpen, setIsPopupAddOpen] = useState(false);
+    const [isPopupAddOpen, setIsPopupOpen] = useState(false);
     const [drivers, setDrivers] = useState<Driver[]>([]);
 
-    useEffect(() => {
-        const fetchApi = async () => {
-            const response = await getDrivers()
-            setDrivers(response);
-        }
-
+    useEffect(() => {        
         fetchApi();
     }, []);
 
+    const fetchApi = async () => {
+        const response = await getDrivers()
+        setDrivers(response);
+    }
 
     const handleSave = () => {
         if (isPopupAddOpen) {
-            setIsPopupAddOpen(false);
+            setIsPopupOpen(false);
         }
     };
 
     const handleCancel = () => {
         if (isPopupAddOpen) {
-            setIsPopupAddOpen(false);
+            setIsPopupOpen(false);
         }
     };
 
@@ -40,7 +41,7 @@ export default function Trucks() {
                     <h2 className="text-2xl font-semibold mb-8">Motoristas</h2>
                 </div>
                 <button
-                    onClick={() => setIsPopupAddOpen(true)}
+                    onClick={() => setIsPopupOpen(true)}
                     className="bg-black text-white text-sm px-2 py-2 rounded-lg hover:bg-gray-800 transition duration-200"
                 >
                     Cadastrar Motorista
@@ -51,7 +52,7 @@ export default function Trucks() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
                 {drivers.length > 0 && drivers.map((driver) => (
-                    <div key={driver.id} className="flex flex-col items-center text-center space-y-2">
+                    <div key={driver.id} className="flex flex-col items-center text-center space-y-4">
                         <button
                             className="focus:outline-none">
                             <img
@@ -62,13 +63,25 @@ export default function Trucks() {
                         </button>
                         <h3 className="text-sm font-semibold">{driver.name}</h3>
                         <p className="text-sm text-gray-500">Licença: {driver.license}</p>
+
+                        <div className="flex space-x-8 my-8">
+                            <button 
+                            onClick={() => setIsPopupOpen(true)}
+                            className="text-gray-500 hover:text-gray-700">
+                                <FontAwesomeIcon icon={faEdit} className="size-4" />
+                            </button>
+
+                            <button className="text-red-500 hover:text-red-700">
+                                <FontAwesomeIcon icon={faTrash} className="size-4" />
+                            </button>
+                        </div>
                     </div>
                 ))}
                 <div>{drivers.length === 0 && <h3 className="text-center justify-center items-center py4 font-semibold">Nada por aqui, cadastre um nofo motorista</h3>}</div>
             </div>
 
             {isPopupAddOpen && (
-                <PopupAdd onClose={handleCancel} onSave={handleSave} />
+                <Modal onClose={handleCancel} onSave={handleSave}/>
             )}
         </div>
     );

@@ -18,7 +18,6 @@ export default function DeliveryDetails() {
             id: 1,
             name: "Emanuel Aline Laura da Cruz",
             license: "35327982203",
-            photo: "https://user-images.githubusercontent.com/11250/39013954-f5091c3a-43e6-11e8-9cac-37cf8e8c8e4e.jpg",
         },
         truck: {
             id: 1,
@@ -49,10 +48,6 @@ export default function DeliveryDetails() {
 
             <div className="text-gray-600 flex items-center space-x-4 mb-10">
                 <p className="flex items-center space-x-2 text-lg ">
-                    <FontAwesomeIcon icon={faMoneyBill} className="size-4 text-gray-500" />
-                    <span>R$: {delivery.value}</span>
-                </p>
-                <p className="flex items-center space-x-2 text-lg ">
                     <FontAwesomeIcon icon={faCalendarAlt} className="size-4 text-gray-500" />
                     <span>{delivery.deliveryTime}</span>
                 </p>
@@ -60,51 +55,52 @@ export default function DeliveryDetails() {
 
             <h2 className="text-lg font-semibold mt-4">Detalhes</h2>
             <div className='border-t border-gray-200 py-8'>
-                <div className="flex justify-between py-2">
-                    <p className="text-gray-500">Destino</p>
-                    <p className="text-gray-900">{delivery.destination}</p>
+
+                <div className="flex items-center justify-between my-4">
+                    <span className="text-gray-600 w-1/3">Valor</span>
+                    <span className="font-medium w-2/3 text-left">R$ {delivery.value}</span>
                 </div>
 
-                <div className="flex justify-between py-2">
-                    <p className="text-gray-500">Tipo</p>
-                    <p className="text-gray-900">{delivery.type}</p>
+                <div className="flex items-center justify-between my-4">
+                    <span className="text-gray-600 w-1/3">Destino</span>
+                    <span className="font-medium w-2/3 text-left">{delivery.destination}</span>
                 </div>
 
-                <div className="flex justify-between py-2">
-                    <p className="text-gray-500">Seguro</p>
-                    <p className="text-gray-900">{delivery.insurance ? "Sim" : "Não"}</p>
+                <div className="flex items-center justify-between my-4">
+                    <span className="text-gray-600 w-1/3">Tipo</span>
+                    <span className="font-medium w-2/3 text-left">{delivery.type}</span>
+                </div>
+
+                <div className="flex items-center justify-between my-4">
+                    <span className="text-gray-600 w-1/3">Seguro</span>
+                    <span className="font-medium w-2/3 text-left">{delivery.insurance ? "Sim" : "Não"}</span>
                 </div>
             </div>
 
             <h2 className="text-lg font-semibold mb-4">Motorista</h2>
-            <div className="border-t border-gray-200 py-8">
-                <div className="flex items-center mb-4">
-                    <img
-                        src={delivery.driver.photo}
-                        alt="Motorista"
-                        className="w-16 h-16 rounded-full object-cover"
-                    />
-                    <div className="ml-4">
-                        <h3 className="font-semibold text-gray-900">{delivery.driver.name}</h3>
-                        <p className="text-gray-500">Licença: {delivery.driver.license}</p>
-                    </div>
+            <div className='border-t border-gray-200 py-8'>
+                <div className="flex items-center justify-between my-4">
+                    <span className="text-gray-600 w-1/3">Nome</span>
+                    <span className="font-medium w-2/3 text-left">{delivery.driver.name}</span>
+                </div>
+
+                <div className="flex items-center justify-between my-4">
+                    <span className="text-gray-600 w-1/3">CNH</span>
+                    <span className="font-medium w-2/3 text-left">{delivery.driver.license}</span>
                 </div>
             </div>
 
             {/* Seção de Caminhão */}
             <h2 className="text-lg font-semibold mb-4">Caminhão</h2>
-            <div className="border-t border-gray-200 pt-4">
-                <div className="mb-2">
-                    <p className="text-gray-500">ID do Caminhão</p>
-                    <p className="text-gray-900">{delivery.truck.id}</p>
+            <div className='border-t border-gray-200 py-8'>
+                <div className="flex items-center justify-between my-4">
+                    <span className="text-gray-600 w-1/3">Placa</span>
+                    <span className="font-medium w-2/3 text-left">{delivery.truck.licensePlate}</span>
                 </div>
-                <div className="mb-2">
-                    <p className="text-gray-500">Placa</p>
-                    <p className="text-gray-900">{delivery.truck.licensePlate}</p>
-                </div>
-                <div>
-                    <p className="text-gray-500">Modelo</p>
-                    <p className="text-gray-900">{delivery.truck.model}</p>
+
+                <div className="flex items-center justify-between my-4">
+                    <span className="text-gray-600 w-1/3">Modelo</span>
+                    <span className="font-medium w-2/3 text-left">{delivery.truck.model}</span>
                 </div>
             </div>
         </div>

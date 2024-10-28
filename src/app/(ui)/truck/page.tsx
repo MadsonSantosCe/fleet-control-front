@@ -1,11 +1,11 @@
 "use client"
 
-import Popup from "@/app/components/popup/truck/popup";
-import { faEdit } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { getTrucks } from '@/services/truck';
 import { Truck } from "@/types/truck";
+import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
+import Modal from "@/app/components/popup/truck/modal";
 
 
 export default function Drivers() {
@@ -55,16 +55,22 @@ export default function Drivers() {
                                 <p className="text-gray-500">Placa: {truck.licensePlate}</p>
                             </div>
                         </div>
-                        <button className="text-gray-500 hover:text-gray-700 ml-auto">
-                            <FontAwesomeIcon icon={faEdit} />
-                        </button>
+                        <div className="flex space-x-8 px-8">
+                            <button className="text-gray-500 hover:text-gray-700">
+                                <FontAwesomeIcon icon={faEdit} className="size-4" />
+                            </button>
+
+                            <button className="text-red-500 hover:text-red-700">
+                                <FontAwesomeIcon icon={faTrash} className="size-4" />
+                            </button>
+                        </div>
                     </div>
                 ))}
                 <div>{trucks.length === 0 && <h3 className="text-center justify-center items-center py4 font-semibold">Nada por aqui, cadastre um novo caminhão</h3>}</div>
             </div>
 
             {isPopupOpen && (
-                <Popup onClose={handleCancel} onSave={handleSave} />
+                <Modal onClose={handleCancel} onSave={handleSave} />
             )}
         </div>
     );

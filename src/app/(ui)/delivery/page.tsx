@@ -64,10 +64,9 @@ export default function Deliveries() {
                                 </td>
                             </tr>
                         ))}
-                        <div>{deliveries.length === 0 && <h3 className="text-center justify-center items-center py4 font-semibold">Nada por aqui, cadastre uma nova entrega</h3>}</div>
                     </tbody>
-                </table>
-
+                </table>                
+                <div>{deliveries.length === 0 && <h3 className="text-center justify-center items-center py4 font-semibold">Nada por aqui, cadastre uma nova entrega</h3>}</div>        
             </div>
         </div>
     );
