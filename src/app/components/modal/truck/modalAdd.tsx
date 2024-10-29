@@ -51,7 +51,6 @@ export default function ModalAdd({ onSave, onClose }: Props) {
       } catch (error) {
         const allMessages = getAllErrorMessages(error);
         allMessages.forEach((msg) => {
-          console.log("Error Truck",apiError)
           setApierror(true);
           toast.error(`Erro: ${msg}`, { duration: 4000 });
         });

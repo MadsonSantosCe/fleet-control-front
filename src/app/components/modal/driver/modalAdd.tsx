@@ -52,7 +52,6 @@ export default function ModalAdd({ onSave, onClose }: Props) {
         const allMessages = getAllErrorMessages(error);
         allMessages.forEach((msg) => {          
           setApierror(true);
-          console.log("Error Driver",apiError)
           toast.error(`Erro: ${msg}`, { duration: 4000 });
         });
       }

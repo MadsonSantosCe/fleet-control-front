@@ -79,14 +79,15 @@ export default function Deliveries() {
                             ))
                         ) : (
                             <tr>
-                                <td colSpan={6} className="text-center py-4 font-semibold text-gray-500">
-                                    Nada por aqui, cadastre uma nova entrega
+                                <td colSpan={6} className="h-full text-center justify-center items-center py-4 font-semibold">
+                                    
                                 </td>
                             </tr>
                         )}
                     </tbody>
                 </table>
             </div>
+            <div>{deliveries.length  === 0 && <h3 className="h-full text-center justify-center items-center  font-semibold">Nada por aqui, cadastre um novo motorista e um caminhão</h3>}</div>
         </div>
     );
 }

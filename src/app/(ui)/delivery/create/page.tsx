@@ -107,8 +107,6 @@ export default function EditDelivery() {
                 deliveryTime: dataFormatada,
             };
 
-            console.log(deliveryRequest);
-
             const response = await fetchCreateDelivery(deliveryRequest);
 
             if (response) {

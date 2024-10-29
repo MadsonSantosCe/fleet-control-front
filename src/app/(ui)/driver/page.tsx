@@ -96,16 +96,15 @@ export default function Trucks() {
                             </button>
                         </div>
                     </div>
-                ))}
-                <div>{drivers.length === 0 && <h3 className="flex h-64 text-center justify-center items-center py4 font-semibold">Nada por aqui, cadastre um novo motorista</h3>}</div>
+                ))}                
                 {loading && (
                     <div className="flex flex-col items-center justify-center h-full text-center">                        
                         <div className="w-4 h-4 border-2 border-t-2 border-gray-200 rounded-full animate-spin"></div>
                     </div>
-                )}
+                )}                
             </div>
 
-
+             <div>{drivers.length === 0 && <h3 className="h-full text-center justify-center items-center py4 font-semibold">Nada por aqui, cadastre um novo motorista</h3>}</div>   
             {popupType === 'add' && (
                 <ModalAdd onClose={handleCancel} onSave={handleSave} />
             )}

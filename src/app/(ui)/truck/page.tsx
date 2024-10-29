@@ -89,9 +89,10 @@ export default function Drivers() {
                         </div>
                     </div>
                 ))}
-                <div>{trucks.length === 0 && <h3 className="h-full text-center justify-center items-center py4 font-semibold">Nada por aqui, cadastre um novo caminhão</h3>}</div>
+                
             </div>
 
+            <div>{trucks.length === 0 && <h3 className="h-full text-center justify-center items-center py-4 font-semibold">Nada por aqui, cadastre um novo caminhão</h3>}</div>
             {popupType === 'add' && (
                 <ModalAdd onClose={handleCancel} onSave={handleSave} />
             )}
