@@ -7,9 +7,18 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { getDeliveries } from '@/services/delivery';
 import { formatDate } from "@/utils/stringUtils";
+import { getDrivers } from "@/services/driver";
+import { getTrucks } from "@/services/truck";
+import { Truck } from "@/types/truck";
+import { Driver } from "@/types/driver";
+
 
 export default function Deliveries() {
     const [deliveries, setDeliveries] = useState<Delivery[]>([]);
+    const [trucks, setTrucks] = useState<Truck[] | null>([]);
+    const [drivers, setDrivers] = useState<Driver[] | null>([]);
+    const [driversFetched, setDriversFetched] = useState(false);
+    const [trucksFetched, setTrucksFetched] = useState(false);
 
     useEffect(() => {
         const fetchApi = async () => {
@@ -18,15 +27,45 @@ export default function Deliveries() {
         };
 
         fetchApi();
+        fetchDrivers();
+        fetchTrucks();
     }, []);
+
+    useEffect(() => {
+        fetchDrivers();
+        fetchTrucks();
+    }, []);
+
+    const fetchDrivers = async () => {
+        if (!driversFetched) {
+            const driverData = await getDrivers();
+            setDrivers(driverData);
+            setDriversFetched(true);
+        }
+    };
+
+    const fetchTrucks = async () => {
+        if (!trucksFetched) {
+            const truckData = await getTrucks();
+            setTrucks(truckData);
+            setTrucksFetched(true);
+        }
+    };
+
+    const truckExist = trucks && trucks.length > 0;
+    const driverExist = drivers && drivers.length > 0;
+    
 
     return (
         <div className="min-h-full flex-1 p-8 bg-white mx-8 sm:mx-8 md:mx-12 my-4 rounded-lg">
             <div className="flex justify-between items-center mb-8">
                 <h2 className="text-2xl font-semibold">Entregas</h2>
-                <Link href="/delivery/create" className="bg-black text-white text-sm px-2 py-2 rounded-lg hover:bg-gray-800 transition duration-200">
-                    Cadastrar Entrega
-                </Link>
+                {truckExist && driverExist && (
+                    <Link href="/delivery/create" className="bg-black text-white text-sm px-2 py-2 rounded-lg hover:bg-gray-800 transition duration-200">
+                        Cadastrar Entrega
+                    </Link>
+                )}
+
             </div>
 
             <div className="overflow-x-auto">
