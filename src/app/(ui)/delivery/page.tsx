@@ -24,11 +24,9 @@ export default function Deliveries() {
         <div className="min-h-full flex-1 p-8 bg-white mx-8 sm:mx-8 md:mx-12 my-4 rounded-lg">
             <div className="flex justify-between items-center mb-8">
                 <h2 className="text-2xl font-semibold">Entregas</h2>
-                <button
-                    className="bg-black text-white text-sm px-2 py-2 rounded-lg hover:bg-gray-800 transition duration-200"
-                >
+                <Link href="/delivery/create" className="bg-black text-white text-sm px-2 py-2 rounded-lg hover:bg-gray-800 transition duration-200">
                     Cadastrar Entrega
-                </button>
+                </Link>
             </div>
 
             <div className="overflow-x-auto">
@@ -69,14 +67,14 @@ export default function Deliveries() {
                                     </td>
 
                                     <td className="p-4 border-b pl-8 border-gray-200 flex">
-                                    <Link
-                                        href={`/delivery/${delivery.id}`}
-                                        className="text-gray-500 hover:text-gray-900"
-                                        aria-label="Ver detalhes">
-                                        <FontAwesomeIcon icon={faEye} />
-                                    </Link>
+                                        <Link
+                                            href={`/delivery/${delivery.id}`}
+                                            className="text-gray-500 hover:text-gray-900"
+                                            aria-label="Ver detalhes">
+                                            <FontAwesomeIcon icon={faEye} />
+                                        </Link>
                                     </td>
-                                    
+
                                 </tr>
                             ))
                         ) : (

@@ -72,9 +72,7 @@ export default function ModalEdit({ onSave, onClose, id }: Props) {
   };
   
   const fetchUpdateDriver = async (id: number, driver: Driver) => {
-    setLoading(true);
-    const response = await updateDriver(id, driver);    
-    setLoading(false);
+    const response = await updateDriver(id, driver);  
     return response;
   };
 

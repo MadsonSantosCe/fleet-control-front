@@ -3,8 +3,7 @@
 import { faCalendarAlt } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { FormEvent, useEffect, useState } from 'react';
-import { formatDate } from '@/utils/stringUtils';
-import { getDeliveryById, UpdateDelivery } from '@/services/delivery';
+import { createDelivery, getDeliveryById, UpdateDelivery } from '@/services/delivery';
 import { Delivery, DeliveryRequest, DeliveryType, Destinations } from '@/types/delivery';
 import { useRouter } from 'next/navigation';
 import { getDrivers } from '@/services/driver';
@@ -15,15 +14,7 @@ import { number, z } from 'zod';
 import toast from 'react-hot-toast';
 import { getAllErrorMessages } from '@/utils/erroMenssagehendle';
 
-interface DeliveryDetailsProps {
-    params: Promise<{ id: string }>;
-}
-
-const schema = z.object({
-    value: z.number().positive().int(),
-});
-
-export default function EditDelivery({ params }: DeliveryDetailsProps) {
+export default function EditDelivery() {
     const [delivery, setDelivery] = useState<Delivery | null>(null);
     const [trucks, setTrucks] = useState<Truck[] | null>([]);
     const [drivers, setDrivers] = useState<Driver[] | null>([]);
@@ -39,8 +30,7 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
     const [driverId, setDriverId] = useState<number | null>(null);
     const [driverName, setDriverName] = useState('');
     const [driverLicense, setDriverLicense] = useState('');
-    const [deliveryId, setdeliveryId] = useState<number>(0);
-    const [deliveryTime, setDeliveryTime] = useState<Date | undefined>(undefined);
+    const [deliveryTime, setDeliveryTime] = useState<string>('');
     const [driversFetched, setDriversFetched] = useState(false);
     const [trucksFetched, setTrucksFetched] = useState(false);
 
@@ -50,37 +40,9 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
     const router = useRouter();
 
     useEffect(() => {
-        const fetchDelivery = async () => {
-            const id = Number((await params).id);
-            setdeliveryId(id);
-
-            if (!isNaN(id)) {
-                const deliveryData = await getDeliveryById(id);
-                setDelivery(deliveryData);
-
-                setDeliveryTime(new Date(deliveryData.deliveryTime));
-                setValue(deliveryData.value.toString());
-                setDestination(deliveryData.destination);
-                setType(deliveryData.type);
-                setInsurance(deliveryData.insurance);
-                setDangerous(deliveryData.dangerous);
-                setValuable(deliveryData.valuable);
-
-                setTruckId(deliveryData.truck.id);
-                setTruckLicensePlate(deliveryData.truck.licensePlate);
-                setTruckModel(deliveryData.truck.model);
-
-                setDriverId(deliveryData.driver.id);
-                setDriverName(deliveryData.driver.name);
-                setDriverLicense(deliveryData.driver.license);
-
-            }
-        };
-
-        fetchDelivery();
-    }, [params]);
-
-    
+        fetchDrivers();
+        fetchTrucks();
+    }, []);
 
     const fetchDrivers = async () => {
         if (!driversFetched) {
@@ -100,7 +62,7 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
 
     const handleDetails = () => {
         if (delivery?.id) {
-            router.push(`/delivery/${delivery?.id}`);
+            router.push(`/delivery`);
         }
     };
 
@@ -117,6 +79,7 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
     };
 
 
+
     const handleTruckChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedTruckId = Number(e.target.value);
         const selectedTruck = trucks?.find((truck) => truck.id === selectedTruckId);
@@ -128,14 +91,10 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
         }
     };
 
-    if (!delivery) return <p></p>;
-
-    
+    const dataFormatada = new Date(deliveryTime);
 
     async function handleSubmit(): Promise<void> {
-
         try {
-
             const deliveryRequest: DeliveryRequest = {
                 value: parseFloat(value),
                 destination: destination as Destinations,
@@ -145,19 +104,20 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
                 valuable,
                 truckId: truckId as number,
                 driverId: driverId as number,
-                deliveryTime: deliveryTime!,
+                deliveryTime: dataFormatada,
             };
 
+            console.log(deliveryRequest);
 
-            const response = await fetchUpdateDelivery(deliveryId, deliveryRequest);
+            const response = await fetchCreateDelivery(deliveryRequest);
 
             if (response) {
-                toast.success("Entrega atualizada com sucesso!");
+                toast.success("Entrega criada com sucesso!");
                 setTimeout(() => {
-                    router.push(`/delivery/${delivery?.id}`);
+                    router.push(`/delivery`);
                 }, 2000);
             } else {
-                throw new Error("Erro ao atualizar a entrega.");
+                throw new Error("Erro ao criar a entrega.");
             }
         } catch (error) {
             const allMessages = getAllErrorMessages(error);
@@ -168,18 +128,15 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
         }
     }
 
-
-    const fetchUpdateDelivery = async (id: number, deliveryRequest: DeliveryRequest) => {
+    const fetchCreateDelivery = async (deliveryRequest: DeliveryRequest) => {
         try {
-            const response = await UpdateDelivery(id, deliveryRequest);
+            const response = await createDelivery(deliveryRequest);
             return response;
         } catch (error) {
-            console.error("Erro ao fazer a requisição de atualização:", error);
+            console.error("Erro ao fazer a requisição de criação:", error);
             throw error;
         }
     };
-
-    //const dataFormatada = new Date(deliveryTime);
 
     return (
         <div className="p-8 max-w-4xl mx-auto">
@@ -202,16 +159,24 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
                 </div>
             </div>
 
-            <div className="text-gray-600 flex items-center space-x-4 mb-10">
-                <p className="flex items-center space-x-2 text-lg">
-                    <FontAwesomeIcon icon={faCalendarAlt} className="size-4 text-gray-500" />
-                    <span>{}</span>
-                </p>
-            </div>
-
-            <h2 className="text-lg font-semibold mt-4">Detalhes</h2>
+            <h2 className="text-lg font-semibold mt-16">Detalhes</h2>
             <form className="space-y-6">
+
                 <div className="border-t border-gray-200 py-4">
+
+                    <div className="flex items-center justify-between my-6">
+                        <span className="block text-gray-700">Data da Entrega</span>
+                        <span className="font-medium w-2/3 text-left">
+                            <input
+                                type="date"
+                                value={deliveryTime}
+                                onChange={(e) => setDeliveryTime(e.target.value)}
+                                className="border-2 rounded-sm border-gray-200 p-2 w-full"
+                            />
+                        </span>
+                    </div>
+
+
                     <div className="flex items-center justify-between my-4">
                         <span className="block text-gray-700">Valor</span>
                         <span className="font-medium w-2/3 text-left">
@@ -259,10 +224,10 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
                         </span>
                     </div>
 
-                    <div className="flex items-center justify-between mt-8">
-                        <span className="text-gray-600 w-1/3">Status</span>
-                        <span className="font-medium w-2/3 text-left">
-                            {type === DeliveryType.Eletronico && (
+                    {type === DeliveryType.Eletronico && (
+                        <div className="flex items-center justify-between mt-10">
+                            <span className="text-gray-600 w-1/3">Status</span>
+                            <span className="font-medium w-2/3 text-left">
                                 <label className="text-green-600 font-semibold mr-2">
                                     <input
                                         type="checkbox"
@@ -272,19 +237,10 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
                                     />
                                     <span>Com seguro</span>
                                 </label>
-                            )}
+                            </span>
+                        </div>
+                    )}
 
-                            {dangerous && (
-                                <span className="text-red-600 font-semibold mr-2">Perigosa</span>
-                            )}
-                            {valuable && (
-                                <span className="text-yellow-600 font-semibold mr-2">Valioso</span>
-                            )}
-                            {!insurance && !dangerous && !valuable && (
-                                <span className="text-gray-500">Padrão</span>
-                            )}
-                        </span>
-                    </div>
                 </div>
 
                 <h2 className="text-lg font-semibold mb-4">Caminhão</h2>
@@ -295,7 +251,6 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
                             <select
                                 value={truckId || ''}
                                 onChange={handleTruckChange}
-                                onFocus={fetchTrucks}
                                 className="border-2 rounded-sm border-gray-200 p-2 w-full"
                                 required
                             >
@@ -330,7 +285,6 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
                             <select
                                 value={driverId || ''}
                                 onChange={handleDriverChange}
-                                onFocus={fetchDrivers}
                                 className="border-2 rounded-sm border-gray-200 p-2 w-full"
                                 required
                             >

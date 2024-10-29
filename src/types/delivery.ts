@@ -30,7 +30,7 @@ export interface Delivery {
   type: DeliveryType;
   value: number;
   destination: Destinations;
-  deliveryTime: string; 
+  deliveryTime: Date; 
   truckId: number;
   driverId: number;
   insurance: boolean;
@@ -44,7 +44,7 @@ export interface DeliveryRequest {
   type: DeliveryType;
   value: number;
   destination: Destinations;
-  deliveryTime: string;
+  deliveryTime: Date;
   truckId: number;
   driverId: number;
   insurance: boolean;
