@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { createDelivery} from '@/services/delivery';
+import { createDelivery } from '@/services/delivery';
 import { Delivery, DeliveryRequest, DeliveryType, Destinations } from '@/types/delivery';
 import { useRouter } from 'next/navigation';
 import { getDrivers } from '@/services/driver';
@@ -10,6 +10,7 @@ import { Truck } from '@/types/truck';
 import { Driver } from '@/types/driver';
 import toast from 'react-hot-toast';
 import { getAllErrorMessages } from '@/utils/erroMenssagehendle';
+import { formatCpf } from '@/utils/stringUtils';
 
 export default function EditDelivery() {
     const [delivery, setDelivery] = useState<Delivery | null>(null);
@@ -58,9 +59,7 @@ export default function EditDelivery() {
     };
 
     const handleDetails = () => {
-        if (delivery?.id) {
-            router.push(`/delivery`);
-        }
+        router.push(`/delivery`);
     };
 
 
@@ -294,11 +293,11 @@ export default function EditDelivery() {
                     </div>
 
                     <div className="flex items-center justify-between my-4">
-                        <span className="text-gray-600 w-1/3">CNH</span>
+                        <span className="text-gray-600 w-1/3">CPF</span>
                         <span className="font-medium w-2/3 text-left">
                             <input
                                 type="text"
-                                value={driverLicense}
+                                value={driverLicense && formatCpf(driverLicense)}
                                 readOnly
                                 className="border-2 rounded-sm border-gray-200 p-2 w-full bg-gray-100"
                             />

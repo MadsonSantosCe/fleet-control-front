@@ -9,6 +9,7 @@ import { Driver } from '@/types/driver';
 import { createDriver } from '@/services/driver';
 import { Toaster, toast } from 'react-hot-toast';
 import { getAllErrorMessages } from '@/utils/erroMenssagehendle';
+import { removeCpfSpecialChars } from '@/utils/stringUtils';
 
 const schema = z.object({
   nameField: z.string().min(3, { message: 'O nome deve ter pelo menos 3 caracteres' }),
@@ -40,8 +41,10 @@ export default function ModalAdd({ onSave, onClose }: Props) {
       });
     } else {
 
+      const cpfLimpo = removeCpfSpecialChars(licenseField);
+
       try {
-        const result = await fetchCreateDriver({ id: 1, name: nameField, license: licenseField });
+        const result = await fetchCreateDriver({ id: 1, name: nameField, license: cpfLimpo });
         setErrors({ nameField: '', licenseField: '' });
 
         setTimeout(() => {

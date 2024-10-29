@@ -3,7 +3,7 @@
 import { faCalendarAlt } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect, useState } from 'react';
-import { formatDate } from '@/utils/stringUtils';
+import { formatCpf, formatDate } from '@/utils/stringUtils';
 import { getDeliveryById } from '@/services/delivery';
 import { Delivery } from '@/types/delivery';
 import { useRouter } from 'next/navigation';
@@ -135,7 +135,7 @@ export default function Details({ params }: DeliveryDetailsProps) {
 
                 <div className="flex items-center justify-between my-4">
                     <span className="text-gray-600 w-1/3">CNH</span>
-                    <span className="font-medium w-2/3 text-left">{delivery.driver.license}</span>
+                    <span className="font-medium w-2/3 text-left">{delivery.driver.license && formatCpf(delivery.driver.license)}</span>
                 </div>
             </div>
 

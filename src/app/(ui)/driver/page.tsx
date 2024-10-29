@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation';
 import ModalAdd from "@/app/components/modal/driver/modalAdd";
 import ModalEdit from "@/app/components/modal/driver/modalEdit";
 import ModalDelete from "@/app/components/modal/driver/modelDelete";
+import { formatCpf } from "@/utils/stringUtils";
 
 export default function Trucks() {
     const [popupType, setPopupType] = useState<null | 'add' | 'edit' | 'delete'>(null);
@@ -78,7 +79,7 @@ export default function Trucks() {
                             />
                         </button>
                         <h3 className="text-sm font-semibold">{driver.name}</h3>
-                        <p className="text-sm text-gray-500">Licença: {driver.license}</p>
+                        <p className="text-sm text-gray-500">CPF: {formatCpf(driver.license)}</p>
 
                         <div className="flex space-x-8 my-8">
                             <button
