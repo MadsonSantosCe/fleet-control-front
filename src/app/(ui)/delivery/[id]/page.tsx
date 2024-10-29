@@ -7,18 +7,22 @@ import { formatDate } from '@/utils/stringUtils';
 import { getDeliveryById } from '@/services/delivery';
 import { Delivery } from '@/types/delivery';
 import { useRouter } from 'next/navigation';
+import ModalDelete from '@/app/components/modal/delivery/modelDelete';
 
 interface DeliveryDetailsProps {
     params: Promise<{ id: string }>; // Marca params como uma Promise
 }
 
 export default function Details({ params }: DeliveryDetailsProps) {
-    const [delivery, setDelivery] = useState<Delivery | null>(null);
+    const [delivery, setDelivery] = useState<Delivery | null>(null);    
+    const [popupType, setPopupType] = useState<null |'delete'>(null);
+    const [isSelected, setIsSelected] = useState<number | null>(null);
     const router = useRouter();
 
     useEffect(() => {
         const fetchDelivery = async () => {
             const id = Number((await params).id);
+            setIsSelected(id);
 
             if (!isNaN(id)) {
                 const deliveryData = await getDeliveryById(id);
@@ -39,6 +43,13 @@ export default function Details({ params }: DeliveryDetailsProps) {
 
     const formattedDate = formatDate(delivery.deliveryTime);
 
+    const handleConfitm = () => {
+        setPopupType('delete');
+    };
+
+    const handleCancel = () => {
+        setPopupType(null);
+    };
     return (
         <div className="p-8 max-w-4xl mx-auto">
             <div className="flex items-center justify-between mb-8">
@@ -51,6 +62,7 @@ export default function Details({ params }: DeliveryDetailsProps) {
                         Editar
                     </button>
                     <button
+                        onClick={handleConfitm}
                         className="px-4 py-2 bg-red-600 text-white text-sm rounded-lg hover:bg-red-700"
                     >
                         Apagar
@@ -126,6 +138,10 @@ export default function Details({ params }: DeliveryDetailsProps) {
                     <span className="font-medium w-2/3 text-left">{delivery.driver.license}</span>
                 </div>
             </div>
+
+            {popupType === 'delete' && isSelected !== null && (
+                <ModalDelete onClose={handleCancel} onSave={handleConfitm} id={isSelected} />
+            )};
         </div>
     );
 }

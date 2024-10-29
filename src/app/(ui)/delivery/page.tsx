@@ -62,7 +62,7 @@ export default function Deliveries() {
                                             <span className="text-yellow-600 font-semibold">Valioso</span>
                                         )}
                                         {!delivery.insurance && !delivery.dangerous && !delivery.valuable && (
-                                            <span className="text-gray-500">Padãoo</span>
+                                            <span className="text-gray-500">Padrão</span>
                                         )}
                                     </td>
 
