@@ -3,7 +3,6 @@
 import { faCalendarAlt } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { FormEvent, useEffect, useState } from 'react';
-import { formatDate } from '@/utils/stringUtils';
 import { getDeliveryById, UpdateDelivery } from '@/services/delivery';
 import { Delivery, DeliveryRequest, DeliveryType, Destinations } from '@/types/delivery';
 import { useRouter } from 'next/navigation';
@@ -11,7 +10,7 @@ import { getDrivers } from '@/services/driver';
 import { getTrucks } from '@/services/truck';
 import { Truck } from '@/types/truck';
 import { Driver } from '@/types/driver';
-import { number, z } from 'zod';
+import { z } from 'zod';
 import toast from 'react-hot-toast';
 import { getAllErrorMessages } from '@/utils/erroMenssagehendle';
 
@@ -80,7 +79,7 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
         fetchDelivery();
     }, [params]);
 
-    
+
 
     const fetchDrivers = async () => {
         if (!driversFetched) {
@@ -130,7 +129,7 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
 
     if (!delivery) return <p></p>;
 
-    
+
 
     async function handleSubmit(): Promise<void> {
 
@@ -205,7 +204,7 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
             <div className="text-gray-600 flex items-center space-x-4 mb-10">
                 <p className="flex items-center space-x-2 text-lg">
                     <FontAwesomeIcon icon={faCalendarAlt} className="size-4 text-gray-500" />
-                    <span>{}</span>
+                    <span>{ }</span>
                 </p>
             </div>
 

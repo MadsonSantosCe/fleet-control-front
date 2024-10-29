@@ -10,12 +10,12 @@ import { useRouter } from 'next/navigation';
 import ModalDelete from '@/app/components/modal/delivery/modelDelete';
 
 interface DeliveryDetailsProps {
-    params: Promise<{ id: string }>; // Marca params como uma Promise
+    params: Promise<{ id: string }>;
 }
 
 export default function Details({ params }: DeliveryDetailsProps) {
-    const [delivery, setDelivery] = useState<Delivery | null>(null);    
-    const [popupType, setPopupType] = useState<null |'delete'>(null);
+    const [delivery, setDelivery] = useState<Delivery | null>(null);
+    const [popupType, setPopupType] = useState<null | 'delete'>(null);
     const [isSelected, setIsSelected] = useState<number | null>(null);
     const router = useRouter();
 
@@ -93,7 +93,7 @@ export default function Details({ params }: DeliveryDetailsProps) {
                     <span className="text-gray-600 w-1/3">Tipo</span>
                     <span className="font-medium w-2/3 text-left">{delivery.type}</span>
                 </div>
-                
+
                 <div className="flex items-center justify-between my-4">
                     <span className="text-gray-600 w-1/3">Status</span>
                     <span className="font-medium w-2/3 text-left">

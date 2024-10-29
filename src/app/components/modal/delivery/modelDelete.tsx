@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
-import { deleteDriver, getDriverById, updateDriver } from '@/services/driver';
 import { Toaster, toast } from 'react-hot-toast';
 import { getAllErrorMessages } from '@/utils/erroMenssagehendle';
 import { deleteDelivery } from '@/services/delivery';
@@ -17,7 +16,7 @@ type Props = {
 
 export default function ModalDelete({ onSave, onClose, id }: Props) {
     const [apiError, setApiError] = useState(false);
-    const [loading, setLoading] = useState(false);    
+    const [loading, setLoading] = useState(false);
     const router = useRouter();
 
     const handleDelete = async () => {

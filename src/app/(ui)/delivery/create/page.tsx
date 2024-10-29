@@ -1,16 +1,13 @@
 "use client";
 
-import { faCalendarAlt } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { FormEvent, useEffect, useState } from 'react';
-import { createDelivery, getDeliveryById, UpdateDelivery } from '@/services/delivery';
+import React, { useEffect, useState } from 'react';
+import { createDelivery} from '@/services/delivery';
 import { Delivery, DeliveryRequest, DeliveryType, Destinations } from '@/types/delivery';
 import { useRouter } from 'next/navigation';
 import { getDrivers } from '@/services/driver';
 import { getTrucks } from '@/services/truck';
 import { Truck } from '@/types/truck';
 import { Driver } from '@/types/driver';
-import { number, z } from 'zod';
 import toast from 'react-hot-toast';
 import { getAllErrorMessages } from '@/utils/erroMenssagehendle';
 

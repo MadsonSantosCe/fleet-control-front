@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
-import { deleteTruck, getTruckById} from '@/services/truck';
+import { deleteTruck, getTruckById } from '@/services/truck';
 import { Toaster, toast } from 'react-hot-toast';
 import { getAllErrorMessages } from '@/utils/erroMenssagehendle';
 

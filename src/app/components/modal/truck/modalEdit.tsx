@@ -43,7 +43,7 @@ export default function ModalEdit({ onSave, onClose, id }: Props) {
 
   const handleUpdate = async () => {
     const resultZod = schema.safeParse({ modelField, licensePlatefield });
-  
+
     if (!resultZod.success) {
       const fieldErrors = resultZod.error.flatten().fieldErrors;
       setErrors({
@@ -51,7 +51,7 @@ export default function ModalEdit({ onSave, onClose, id }: Props) {
         licensePlatefield: fieldErrors.licensePlatefield ? fieldErrors.licensePlatefield[0] : '',
       });
     } else {
-      
+
       try {
         await fetchUpdateTruck(id, { id, model: modelField, licensePlate: licensePlatefield });
         setErrors({ modelField: '', licensePlatefield: '' });
@@ -70,7 +70,7 @@ export default function ModalEdit({ onSave, onClose, id }: Props) {
       }
     }
   };
-  
+
   const fetchUpdateTruck = async (id: number, truck: Truck) => {
     setLoading(true);
     const response = await updateTruck(id, truck);

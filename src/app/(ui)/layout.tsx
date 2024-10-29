@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import NavItem from "../components/ui/nav-item";
-import { faBox, faHome, faTruck, faUser } from "@fortawesome/free-solid-svg-icons";
+import { faBox, faTruck, faUser } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 
 type Props = {
@@ -14,14 +14,14 @@ export default function Layouit({ children }: Props) {
             <aside className="bg-white w-64 p-6 border-r border-gray-200">
 
                 <div className="flex items-center space-x-2 mb-6 border-b border-gray-200 py-6">
-                    <Link href={'/delivery'}><span className="text-lg font-semibold">Dashboard</span></Link>
+                    <Link href={'/driver'}><span className="text-lg font-semibold">Dashboard</span></Link>
                 </div>
                 <div className="flex-1 mt-6">
                     <nav className="mt-11">
                         <NavItem
-                            href="/delivery"
-                            icon={faBox}
-                            label="Entregas"
+                            href="/driver"
+                            icon={faUser}
+                            label="Motoristas"
                         />
                         <NavItem
                             href="/truck"
@@ -29,10 +29,12 @@ export default function Layouit({ children }: Props) {
                             label="Caminhôes"
                         />
                         <NavItem
-                            href="/driver"
-                            icon={faUser}
-                            label="Motoristas"
+                            href="/delivery"
+                            icon={faBox}
+                            label="Entregas"
                         />
+
+
                     </nav>
                 </div>
 
