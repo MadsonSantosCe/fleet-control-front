@@ -70,7 +70,7 @@ export default function Drivers() {
                     <div key={truck.id} className="flex items-center justify-between p-4 px-16 border-b border-gray-200">
                         <div className="flex items-center space-x-4">
                             <div>
-                                <h3 className="text-lg font-semibold">{truck.model}</h3>
+                                <h3 className="text-lg font-semibold mb-4">{truck.model}</h3>
                                 <p className="text-gray-500">Placa: {truck.licensePlate}</p>
                             </div>
                         </div>

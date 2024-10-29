@@ -71,15 +71,18 @@ export default function Trucks() {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
                 {drivers.length > 0 && drivers.map((driver) => (
                     <div key={driver.id} className="flex flex-col items-center text-center space-y-4">
-                        <button className="focus:outline-none">
-                            <img
-                                src="https://user-images.githubusercontent.com/11250/39013954-f5091c3a-43e6-11e8-9cac-37cf8e8c8e4e.jpg"
-                                alt="avatar"
-                                className="w-32 h-32 rounded-full object-cover object-center transition-transform duration-200 hover:scale-105"
-                            />
-                        </button>
-                        <h3 className="text-sm font-semibold">{driver.name}</h3>
-                        <p className="text-sm text-gray-500">CPF: {formatCpf(driver.license)}</p>
+                        <div className="flex flex-col items-center space-y-2">
+                            <button className="focus:outline-none">
+                                <img
+                                    src="https://user-images.githubusercontent.com/11250/39013954-f5091c3a-43e6-11e8-9cac-37cf8e8c8e4e.jpg"
+                                    alt={`Avatar de ${driver.name}`}
+                                    className="w-32 h-32 rounded-full object-cover object-center transition-transform duration-200 hover:scale-105"
+                                />
+                            </button>
+                            <h3 className="text-sm font-semibold text-center">{driver.name}</h3>
+                            <p className="text-sm text-gray-500 text-center">CPF: {formatCpf(driver.license)}</p>
+                        </div>
+
 
                         <div className="flex space-x-8 my-8">
                             <button
