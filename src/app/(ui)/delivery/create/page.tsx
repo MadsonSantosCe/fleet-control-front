@@ -113,11 +113,9 @@ export default function EditDelivery() {
         setTimeout(() => {
           router.push(`/delivery`);
         }, 2000);
-      } else {
-        throw new Error("Erro ao criar a entrega.");
       }
     } catch (error) {
-      toast.error(`Erro: ${error}`, { duration: 4000 });
+      toast.error(`${error}`, { duration: 6000 });
     }
   }
 

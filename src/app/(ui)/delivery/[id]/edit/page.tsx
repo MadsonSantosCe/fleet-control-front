@@ -3,7 +3,7 @@
 import { faCalendarAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { FormEvent, useEffect, useState } from "react";
-import { getDeliveryById, UpdateDelivery } from "@/services/delivery";
+import { getDeliveryById, updateDelivery} from "@/services/delivery";
 import {
   Delivery,
   DeliveryRequest,
@@ -155,7 +155,7 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
         throw new Error("Erro ao atualizar a entrega.");
       }
     } catch (error) {
-      toast.error(`Erro: ${error}`, { duration: 4000 });
+      toast.error(`Erro: ${error}`, { duration: 6000 });
     }
   }
 
@@ -164,7 +164,7 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
     deliveryRequest: DeliveryRequest
   ) => {
     try {
-      const response = await UpdateDelivery(id, deliveryRequest);
+      const response = await updateDelivery(id, deliveryRequest);
       return response;
     } catch (error) {
       console.error("Erro ao fazer a requisição de atualização:", error);

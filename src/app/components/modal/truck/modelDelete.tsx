@@ -39,7 +39,7 @@ export default function ModalDelete({ onSave, onClose, id }: Props) {
         window.location.reload();
       }, 1000);
     } catch (error) {
-      toast.error(`${error}`, { duration: 4000 });
+      toast.error(`${error}`, { duration: 6000 });
     }
   };
 

@@ -28,7 +28,7 @@ export default function ModalDelete({ onSave, onClose, id }: Props) {
             }, 2000);
 
         } catch (error) {
-            toast.error(`Erro: ${error}`, { duration: 4000 });
+            toast.error(`Erro: ${error}`, { duration: 6000 });
         }
     };
 
