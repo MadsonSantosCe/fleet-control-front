@@ -1,18 +1,23 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
-import { Input } from '../../ui/Input';
-import { z } from 'zod';
-import { Toaster, toast } from 'react-hot-toast';
-import { getAllErrorMessages } from '@/utils/erroMenssagehendle';
-import { getTruckById, updateTruck } from '@/services/truck';
-import { Truck } from '@/types/truck';
+import React, { useEffect, useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import { Input } from "@/app/components/ui/input";
+import { z } from "zod";
+import { toast } from "react-hot-toast";
+import { getTruckById, updateTruck } from "@/services/truck";
+import { Truck } from "@/types/Truck";
 
 const schema = z.object({
-  modelField: z.string().min(3, { message: 'O nome deve ter pelo menos 3 caracteres' }),
-  licensePlatefield: z.string().length(7, { message: 'O CPF deve ter exatamente 11 dígitos e apenas números' })
+  modelField: z
+    .string()
+    .min(3, { message: "O nome deve ter pelo menos 3 caracteres" }),
+  licensePlatefield: z
+    .string()
+    .length(7, {
+      message: "O CPF deve ter exatamente 11 dígitos e apenas números",
+    }),
 });
 
 type Props = {
@@ -22,10 +27,12 @@ type Props = {
 };
 
 export default function ModalEdit({ onSave, onClose, id }: Props) {
-
-  const [modelField, setModelField] = useState('');
-  const [licensePlatefield, setLicensePlatefield] = useState('');
-  const [errors, setErrors] = useState({ modelField: '', licensePlatefield: '' });
+  const [modelField, setModelField] = useState("");
+  const [licensePlatefield, setLicensePlatefield] = useState("");
+  const [errors, setErrors] = useState({
+    modelField: "",
+    licensePlatefield: "",
+  });
   const [apiError, setApiError] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -47,26 +54,26 @@ export default function ModalEdit({ onSave, onClose, id }: Props) {
     if (!resultZod.success) {
       const fieldErrors = resultZod.error.flatten().fieldErrors;
       setErrors({
-        modelField: fieldErrors.modelField ? fieldErrors.modelField[0] : '',
-        licensePlatefield: fieldErrors.licensePlatefield ? fieldErrors.licensePlatefield[0] : '',
+        modelField: fieldErrors.modelField ? fieldErrors.modelField[0] : "",
+        licensePlatefield: fieldErrors.licensePlatefield
+          ? fieldErrors.licensePlatefield[0]
+          : "",
       });
     } else {
-
       try {
-        await fetchUpdateTruck(id, { id, model: modelField, licensePlate: licensePlatefield });
-        setErrors({ modelField: '', licensePlatefield: '' });
+        await fetchUpdateTruck(id, {
+          id,
+          model: modelField,
+          licensePlate: licensePlatefield,
+        });
+        setErrors({ modelField: "", licensePlatefield: "" });
         setApiError(false);
 
         setTimeout(() => {
           window.location.reload();
         }, 1000);
-
       } catch (error) {
-        const allMessages = getAllErrorMessages(error);
-        allMessages.forEach((msg) => {
-          setApiError(true);
-          toast.error(`Erro: ${msg}`, { duration: 4000 });
-        });
+        toast.error(`${error}`, { duration: 4000 });
       }
     }
   };
@@ -90,13 +97,12 @@ export default function ModalEdit({ onSave, onClose, id }: Props) {
 
         <div>
           <h2 className="text-xl font-semibold mb-10">Editar motorista</h2>
-          {apiError && <Toaster position="top-center" />}
 
           <div className="mb-4">
             <Input
               value={modelField}
               placeholder="Digite o nome do colaborador"
-              onChange={e => setModelField(e.target.value)}
+              onChange={(e) => setModelField(e.target.value)}
               errorMessage={errors.modelField}
             />
           </div>
@@ -105,7 +111,7 @@ export default function ModalEdit({ onSave, onClose, id }: Props) {
             <Input
               value={licensePlatefield}
               placeholder="Digite o CPF do colaborador"
-              onChange={e => setLicensePlatefield(e.target.value)}
+              onChange={(e) => setLicensePlatefield(e.target.value)}
               errorMessage={errors.licensePlatefield}
             />
           </div>

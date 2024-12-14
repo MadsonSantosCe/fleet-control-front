@@ -1,21 +1,22 @@
 "use client";
 
-import React, { useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
-import { Input } from '../../ui/Input';
-import { z } from 'zod';
-import { Driver } from '@/types/driver';
-import { createDriver } from '@/services/driver';
-import { Toaster, toast } from 'react-hot-toast';
-import { getAllErrorMessages } from '@/utils/erroMenssagehendle';
-import { removeCpfSpecialChars } from '@/utils/stringUtils';
+import React, { useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import { z } from "zod";
+import { Driver } from "@/types/Driver";
+import { createDriver } from "@/services/driver";
+import { toast } from "react-hot-toast";
+import { removeCpfSpecialChars } from "@/utils/stringUtils";
+import { Input } from "@/app/components/ui/input";
 
 const schema = z.object({
-  nameField: z.string().min(3, { message: 'O nome deve ter pelo menos 3 caracteres' }),
-  licenseField: z
+  nameField: z
     .string()
-    .length(11, { message: 'O CPF deve ter exatamente 11 dígitos e apenas números' })
+    .min(3, { message: "O nome deve ter pelo menos 3 caracteres" }),
+  licenseField: z.string().length(11, {
+    message: "O CPF deve ter exatamente 11 dígitos e apenas números",
+  }),
 });
 
 type Props = {
@@ -24,10 +25,9 @@ type Props = {
 };
 
 export default function ModalAdd({ onSave, onClose }: Props) {
-
-  const [nameField, setNameField] = useState('');
-  const [licenseField, setLicenseField] = useState('');
-  const [errors, setErrors] = useState({ nameField: '', licenseField: '' });
+  const [nameField, setNameField] = useState("");
+  const [licenseField, setLicenseField] = useState("");
+  const [errors, setErrors] = useState({ nameField: "", licenseField: "" });
   const [apiError, setApierror] = useState(false);
 
   const handleSave = async () => {
@@ -36,27 +36,27 @@ export default function ModalAdd({ onSave, onClose }: Props) {
     if (!resultZod.success) {
       const fieldErrors = resultZod.error.flatten().fieldErrors;
       setErrors({
-        nameField: fieldErrors.nameField ? fieldErrors.nameField[0] : '',
-        licenseField: fieldErrors.licenseField ? fieldErrors.licenseField[0] : '',
+        nameField: fieldErrors.nameField ? fieldErrors.nameField[0] : "",
+        licenseField: fieldErrors.licenseField
+          ? fieldErrors.licenseField[0]
+          : "",
       });
     } else {
-
       const cpfLimpo = removeCpfSpecialChars(licenseField);
 
       try {
-        const result = await fetchCreateDriver({ id: 1, name: nameField, license: cpfLimpo });
-        setErrors({ nameField: '', licenseField: '' });
+        const result = await fetchCreateDriver({
+          id: 1,
+          name: nameField,
+          license: cpfLimpo,
+        });
+        setErrors({ nameField: "", licenseField: "" });
 
         setTimeout(() => {
           window.location.reload();
         }, 1000);
-
       } catch (error) {
-        const allMessages = getAllErrorMessages(error);
-        allMessages.forEach((msg) => {
-          setApierror(true);
-          toast.error(`Erro: ${msg}`, { duration: 4000 });
-        });
+        toast.error(`${error}`, { duration: 4000 });
       }
     }
   };
@@ -78,13 +78,12 @@ export default function ModalAdd({ onSave, onClose }: Props) {
 
         <div>
           <h2 className="text-xl font-semibold mb-10">Novo motorista</h2>
-          {apiError && <Toaster position="top-center" />}
 
           <div className="mb-4">
             <Input
               value={nameField}
               placeholder="Digite o nome do colaborador"
-              onChange={e => setNameField(e.target.value)}
+              onChange={(e) => setNameField(e.target.value)}
               errorMessage={errors.nameField}
             />
           </div>
@@ -93,7 +92,7 @@ export default function ModalAdd({ onSave, onClose }: Props) {
             <Input
               value={licenseField}
               placeholder="Digite o CPF do colaborador"
-              onChange={e => setLicenseField(e.target.value)}
+              onChange={(e) => setLicenseField(e.target.value)}
               errorMessage={errors.licenseField}
             />
           </div>

@@ -1,10 +1,9 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
-import { Toaster, toast } from 'react-hot-toast';
-import { getAllErrorMessages } from '@/utils/erroMenssagehendle';
+import { toast } from 'react-hot-toast';
 import { deleteDelivery } from '@/services/delivery';
 import { redirect, useRouter } from 'next/navigation';
 
@@ -29,11 +28,7 @@ export default function ModalDelete({ onSave, onClose, id }: Props) {
             }, 2000);
 
         } catch (error) {
-            const allMessages = getAllErrorMessages(error);
-            allMessages.forEach((msg) => {
-                setApiError(true);
-                toast.error(`Erro: ${msg}`, { duration: 4000 });
-            });
+            toast.error(`Erro: ${error}`, { duration: 4000 });
         }
     };
 
@@ -54,7 +49,6 @@ export default function ModalDelete({ onSave, onClose, id }: Props) {
 
                 <div>
                     <h2 className="text-xl font-semibold mb-10">Deseja deletar a entrega?</h2>
-                    {apiError && <Toaster position="top-center" />}
 
                     <div className="flex justify-end space-x-4 mt-10">
                         <button

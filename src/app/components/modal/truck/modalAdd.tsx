@@ -1,20 +1,21 @@
 "use client";
 
-import React, { useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
-import { Input } from '../../ui/Input';
-import { z } from 'zod';
-import { Truck } from '@/types/truck';
-import { createTruck } from '@/services/truck';
-import { Toaster, toast } from 'react-hot-toast';
-import { getAllErrorMessages } from '@/utils/erroMenssagehendle';
+import React, { useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import { Input } from "@/app/components/ui/input";
+import { z } from "zod";
+import { Truck } from "@/types/Truck";
+import { createTruck } from "@/services/truck";
+import { toast } from "react-hot-toast";
 
 const schema = z.object({
-  modelField: z.string().min(3, { message: 'O modelo deve ter pelo menos 3 caracteres' }),
+  modelField: z
+    .string()
+    .min(3, { message: "O modelo deve ter pelo menos 3 caracteres" }),
   licensePlatefield: z
     .string()
-    .length(7, { message: 'O Placa deve ter exatamente 7 dígitos sem traço' })
+    .length(7, { message: "O Placa deve ter exatamente 7 dígitos sem traço" }),
 });
 
 type Props = {
@@ -23,10 +24,12 @@ type Props = {
 };
 
 export default function ModalAdd({ onSave, onClose }: Props) {
-
-  const [modelField, setModelField] = useState('');
-  const [licensePlatefield, setLicensePlatefield] = useState('');
-  const [errors, setErrors] = useState({ modelField: '', licensePlatefield: '' });
+  const [modelField, setModelField] = useState("");
+  const [licensePlatefield, setLicensePlatefield] = useState("");
+  const [errors, setErrors] = useState({
+    modelField: "",
+    licensePlatefield: "",
+  });
   const [apiError, setApierror] = useState(false);
 
   const handleSave = async () => {
@@ -35,25 +38,25 @@ export default function ModalAdd({ onSave, onClose }: Props) {
     if (!resultZod.success) {
       const fieldErrors = resultZod.error.flatten().fieldErrors;
       setErrors({
-        modelField: fieldErrors.modelField ? fieldErrors.modelField[0] : '',
-        licensePlatefield: fieldErrors.licensePlatefield ? fieldErrors.licensePlatefield[0] : '',
+        modelField: fieldErrors.modelField ? fieldErrors.modelField[0] : "",
+        licensePlatefield: fieldErrors.licensePlatefield
+          ? fieldErrors.licensePlatefield[0]
+          : "",
       });
     } else {
-
       try {
-        const result = await fetchCreateTruck({ id: 1, model: modelField, licensePlate: licensePlatefield });
-        setErrors({ modelField: '', licensePlatefield: '' });
+        const result = await fetchCreateTruck({
+          id: 1,
+          model: modelField,
+          licensePlate: licensePlatefield,
+        });
+        setErrors({ modelField: "", licensePlatefield: "" });
 
         setTimeout(() => {
           window.location.reload();
         }, 1000);
-
       } catch (error) {
-        const allMessages = getAllErrorMessages(error);
-        allMessages.forEach((msg) => {
-          setApierror(true);
-          toast.error(`Erro: ${msg}`, { duration: 4000 });
-        });
+        toast.error(`${error}`, { duration: 4000 });
       }
     }
   };
@@ -75,13 +78,12 @@ export default function ModalAdd({ onSave, onClose }: Props) {
 
         <div>
           <h2 className="text-xl font-semibold mb-10">Novo veículo</h2>
-          {apiError && <Toaster position="top-center" />}
 
           <div className="mb-4">
             <Input
               value={modelField}
               placeholder="Digite o nome modelo"
-              onChange={e => setModelField(e.target.value)}
+              onChange={(e) => setModelField(e.target.value)}
               errorMessage={errors.modelField}
             />
           </div>
@@ -90,7 +92,7 @@ export default function ModalAdd({ onSave, onClose }: Props) {
             <Input
               value={licensePlatefield}
               placeholder="Digite a placa do viículo"
-              onChange={e => setLicensePlatefield(e.target.value)}
+              onChange={(e) => setLicensePlatefield(e.target.value)}
               errorMessage={errors.licensePlatefield}
             />
           </div>

@@ -1,18 +1,21 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
-import { Input } from '../../ui/Input';
-import { z } from 'zod';
-import { Driver } from '@/types/driver';
-import { getDriverById, updateDriver } from '@/services/driver';
-import { Toaster, toast } from 'react-hot-toast';
-import { getAllErrorMessages } from '@/utils/erroMenssagehendle';
+import React, { useEffect, useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import { Input } from "@/app/components/ui/input";
+import { z } from "zod";
+import { Driver } from "@/types/Driver";
+import { getDriverById, updateDriver } from "@/services/driver";
+import { toast } from "react-hot-toast";
 
 const schema = z.object({
-  nameField: z.string().min(3, { message: 'O nome deve ter pelo menos 3 caracteres' }),
-  licenseField: z.string().length(11, { message: 'O CPF deve ter exatamente 11 dígitos e apenas números' })
+  nameField: z
+    .string()
+    .min(3, { message: "O nome deve ter pelo menos 3 caracteres" }),
+  licenseField: z.string().length(11, {
+    message: "O CPF deve ter exatamente 11 dígitos e apenas números",
+  }),
 });
 
 type Props = {
@@ -22,10 +25,9 @@ type Props = {
 };
 
 export default function ModalEdit({ onSave, onClose, id }: Props) {
-
-  const [nameField, setNameField] = useState('');
-  const [licenseField, setLicenseField] = useState('');
-  const [errors, setErrors] = useState({ nameField: '', licenseField: '' });
+  const [nameField, setNameField] = useState("");
+  const [licenseField, setLicenseField] = useState("");
+  const [errors, setErrors] = useState({ nameField: "", licenseField: "" });
   const [apiError, setApiError] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -47,26 +49,26 @@ export default function ModalEdit({ onSave, onClose, id }: Props) {
     if (!resultZod.success) {
       const fieldErrors = resultZod.error.flatten().fieldErrors;
       setErrors({
-        nameField: fieldErrors.nameField ? fieldErrors.nameField[0] : '',
-        licenseField: fieldErrors.licenseField ? fieldErrors.licenseField[0] : '',
+        nameField: fieldErrors.nameField ? fieldErrors.nameField[0] : "",
+        licenseField: fieldErrors.licenseField
+          ? fieldErrors.licenseField[0]
+          : "",
       });
     } else {
-
       try {
-        await fetchUpdateDriver(id, { id, name: nameField, license: licenseField });
-        setErrors({ nameField: '', licenseField: '' });
+        await fetchUpdateDriver(id, {
+          id,
+          name: nameField,
+          license: licenseField,
+        });
+        setErrors({ nameField: "", licenseField: "" });
         setApiError(false);
 
         setTimeout(() => {
           window.location.reload();
         }, 1000);
-
       } catch (error) {
-        const allMessages = getAllErrorMessages(error);
-        allMessages.forEach((msg) => {
-          setApiError(true);
-          toast.error(`Erro: ${msg}`, { duration: 4000 });
-        });
+        toast.error(`${error}`, { duration: 4000 });
       }
     }
   };
@@ -88,13 +90,12 @@ export default function ModalEdit({ onSave, onClose, id }: Props) {
 
         <div>
           <h2 className="text-xl font-semibold mb-10">Editar motorista</h2>
-          {apiError && <Toaster position="top-center" />}
 
           <div className="mb-4">
             <Input
               value={nameField}
               placeholder="Digite o nome do colaborador"
-              onChange={e => setNameField(e.target.value)}
+              onChange={(e) => setNameField(e.target.value)}
               errorMessage={errors.nameField}
             />
           </div>
@@ -103,7 +104,7 @@ export default function ModalEdit({ onSave, onClose, id }: Props) {
             <Input
               value={licenseField}
               placeholder="Digite o CPF do colaborador"
-              onChange={e => setLicenseField(e.target.value)}
+              onChange={(e) => setLicenseField(e.target.value)}
               errorMessage={errors.licenseField}
             />
           </div>
