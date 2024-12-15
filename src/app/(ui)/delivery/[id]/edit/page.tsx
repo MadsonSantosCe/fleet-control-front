@@ -3,7 +3,7 @@
 import { faCalendarAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { FormEvent, useEffect, useState } from "react";
-import { getDeliveryById, updateDelivery} from "@/services/delivery";
+import { getDeliveryById, updateDelivery } from "@/services/delivery";
 import {
   Delivery,
   DeliveryRequest,
@@ -17,6 +17,7 @@ import { Truck } from "@/types/Truck";
 import { Driver } from "@/types/Driver";
 import { z } from "zod";
 import toast from "react-hot-toast";
+import { formatDate } from "@/utils/stringUtils";
 
 interface DeliveryDetailsProps {
   params: Promise<{ id: string }>;
@@ -170,7 +171,7 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
     }
   };
 
-  //const dataFormatada = new Date(deliveryTime);
+  const formattedDate = deliveryTime ? formatDate(deliveryTime) : '';
 
   return (
     <div className="p-8 max-w-4xl mx-auto">
@@ -194,12 +195,12 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
       </div>
 
       <div className="text-gray-600 flex items-center space-x-4 mb-10">
-        <p className="flex items-center space-x-2 text-lg">
+        <p className="flex items-center space-x-2 text-sm">
           <FontAwesomeIcon
             icon={faCalendarAlt}
             className="size-4 text-gray-500"
           />
-          <span>{}</span>
+          <span>{formattedDate}</span>
         </p>
       </div>
 

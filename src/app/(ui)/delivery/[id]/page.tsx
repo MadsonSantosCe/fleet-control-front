@@ -2,83 +2,136 @@
 
 import { faCalendarAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useEffect, useState } from "react";
-import { formatCpf, formatDate } from "@/utils/stringUtils";
+import { useEffect, useState } from "react";
 import { getDeliveryById } from "@/services/delivery";
 import { Delivery } from "@/types/Delivery";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { formatDate } from "@/utils/stringUtils";
 import ModalDelete from "@/app/components/modal/delivery/modelDelete";
+import { Loader } from "@/app/components/ui/loader";
 
 interface DeliveryDetailsProps {
   params: Promise<{ id: string }>;
 }
 
-export default function Details({ params }: DeliveryDetailsProps) {
+export default function DeliveryDetailsPage({ params }: DeliveryDetailsProps) {
   const [delivery, setDelivery] = useState<Delivery | null>(null);
-  const [popupType, setPopupType] = useState<null | "delete">(null);
-  const [isSelected, setIsSelected] = useState<number | null>(null);
-  const router = useRouter();
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const fetchDelivery = async () => {
-      const id = Number((await params).id);
-      setIsSelected(id);
+    fetchDeliveryDetails();
+  }, [params]);
 
+  const fetchDeliveryDetails = async () => {
+    try {
+      const id = Number((await params).id);
       if (!isNaN(id)) {
         const deliveryData = await getDeliveryById(id);
         setDelivery(deliveryData);
       }
-    };
-
-    fetchDelivery();
-  }, [params]);
-
-  const handleEdit = () => {
-    if (delivery?.id) {
-      router.push(`/delivery/${delivery?.id}/edit`);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  if (!delivery) return <p>Carregando...</p>;
+  const handleModalClose = () => setShowDeleteModal(false);
+  const handleModalOpen = () => setShowDeleteModal(true);
 
-  const formattedDate = formatDate(delivery.deliveryTime);
+  const renderDeliveryStatus = () => {
+    if (!delivery) return null;
 
-  const handleConfitm = () => {
-    setPopupType("delete");
+    return (
+      <>
+        {delivery.insurance && (
+          <span className="text-green-600 font-semibold mr-2">Com seguro</span>
+        )}
+        {delivery.dangerous && (
+          <span className="text-red-600 font-semibold mr-2">Perigosa</span>
+        )}
+        {delivery.valuable && (
+          <span className="text-yellow-600 font-semibold">Valioso</span>
+        )}
+        {!delivery.insurance && !delivery.dangerous && !delivery.valuable && (
+          <span className="text-gray-500">Padrão</span>
+        )}
+      </>
+    );
   };
 
-  const handleCancel = () => {
-    setPopupType(null);
-  };
+  const renderTruckInfo = () => (
+    <div className="border-t border-gray-200 py-8">
+      <div className="flex items-center justify-between my-4">
+        <span className="text-gray-600 w-1/3">Placa</span>
+        <span className="font-medium w-2/3 text-left">
+          {delivery?.truck.licensePlate}
+        </span>
+      </div>
+      <div className="flex items-center justify-between my-4">
+        <span className="text-gray-600 w-1/3">Modelo</span>
+        <span className="font-medium w-2/3 text-left">
+          {delivery?.truck.model}
+        </span>
+      </div>
+    </div>
+  );
+
+  const renderDriverInfo = () => (
+    <div className="border-t border-gray-200 py-6">
+      <div className="flex items-center justify-between my-4">
+        <span className="text-gray-600 w-1/3">Nome</span>
+        <span className="font-medium w-2/3 text-left">
+          {delivery?.driver.name}
+        </span>
+      </div>
+      <div className="flex items-center justify-between my-4">
+        <span className="text-gray-600 w-1/3">CNH</span>
+        <span className="font-medium w-2/3 text-left">
+          {delivery?.driver.license}
+        </span>
+      </div>
+    </div>
+  );
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen">
+        <h1 className="mb-4 text-xl font-bold">Loading...</h1>
+        <Loader />
+      </div>
+    );
+  }
+
+  if (!delivery) return null;
+
   return (
     <div className="p-8 max-w-4xl mx-auto">
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-2xl font-semibold">Entrega</h1>
         <div className="flex space-x-4">
           <button
-            onClick={handleEdit}
-            className="px-4 py-2 border border-gray-300 text-sm rounded-lg hover:bg-gray-100"
+            onClick={handleModalOpen}
+            className="px-2 py-2 border border-gray-300 text-sm rounded-lg text-red-600 hover:bg-red-50"
+          >
+            Excluir
+          </button>
+          <Link
+            href={`/delivery/${delivery.id}/edit`}
+            className="px-4 py-2 rounded-md text-white bg-black hover:bg-gray-900"
           >
             Editar
-          </button>
-          <button
-            onClick={handleConfitm}
-            className="px-4 py-2 bg-red-600 text-white text-sm rounded-lg hover:bg-red-700"
-          >
-            Apagar
-          </button>
+          </Link>
         </div>
       </div>
+
       <div className="text-gray-600 flex items-center space-x-4 mb-10">
-        <p className="flex items-center space-x-2 text-lg">
-          <FontAwesomeIcon
-            icon={faCalendarAlt}
-            className="size-4 text-gray-500"
-          />
-          <span>{formattedDate}</span>
+        <p className="flex items-center space-x-2 text-sm">
+          <FontAwesomeIcon icon={faCalendarAlt} className="size-4 text-gray-500" />
+          <span>{formatDate(delivery.deliveryTime)}</span>
         </p>
       </div>
-      <h2 className="text-lg font-semibold mt-4">Detalhes</h2>
+
+      <h2 className="text-lg font-semibold">Detalhes</h2>
       <div className="border-t border-gray-200 py-4">
         <div className="flex items-center justify-between my-4">
           <span className="text-gray-600 w-1/3">Valor</span>
@@ -89,9 +142,7 @@ export default function Details({ params }: DeliveryDetailsProps) {
 
         <div className="flex items-center justify-between my-4">
           <span className="text-gray-600 w-1/3">Destino</span>
-          <span className="font-medium w-2/3 text-left">
-            {delivery.destination}
-          </span>
+          <span className="font-medium w-2/3 text-left">{delivery.destination}</span>
         </div>
 
         <div className="flex items-center justify-between my-4">
@@ -99,68 +150,27 @@ export default function Details({ params }: DeliveryDetailsProps) {
           <span className="font-medium w-2/3 text-left">{delivery.type}</span>
         </div>
 
-        <div className="flex items-center justify-between my-4">
+        <div className="flex items-center justify-between mt-4">
           <span className="text-gray-600 w-1/3">Status</span>
           <span className="font-medium w-2/3 text-left">
-            {delivery.insurance && (
-              <span className="text-green-600 font-semibold mr-2">
-                Com seguro
-              </span>
-            )}
-            {delivery.dangerous && (
-              <span className="text-red-600 font-semibold mr-2">Perigosa</span>
-            )}
-            {delivery.valuable && (
-              <span className="text-yellow-600 font-semibold">Valioso</span>
-            )}
-            {!delivery.insurance &&
-              !delivery.dangerous &&
-              !delivery.valuable && (
-                <span className="text-gray-500">Padrão</span>
-              )}
+            {renderDeliveryStatus()}
           </span>
         </div>
       </div>
-      <h2 className="text-lg font-semibold mb-4">Caminhão</h2>
-      <div className="border-t border-gray-200 py-8">
-        <div className="flex items-center justify-between my-4">
-          <span className="text-gray-600 w-1/3">Placa</span>
-          <span className="font-medium w-2/3 text-left">
-            {delivery.truck.licensePlate}
-          </span>
-        </div>
 
-        <div className="flex items-center justify-between my-4">
-          <span className="text-gray-600 w-1/3">Modelo</span>
-          <span className="font-medium w-2/3 text-left">
-            {delivery.truck.model}
-          </span>
-        </div>
-      </div>
-      <h2 className="text-lg font-semibold mb-4">Motorista</h2>
-      <div className="border-t border-gray-200 py-6">
-        <div className="flex items-center justify-between my-4">
-          <span className="text-gray-600 w-1/3">Nome</span>
-          <span className="font-medium w-2/3 text-left">
-            {delivery.driver.name}
-          </span>
-        </div>
+      <h2 className="text-lg font-semibold mt-4">Caminhão</h2>
+      {renderTruckInfo()}
 
-        <div className="flex items-center justify-between my-4">
-          <span className="text-gray-600 w-1/3">CNH</span>
-          <span className="font-medium w-2/3 text-left">
-            {delivery.driver.license && formatCpf(delivery.driver.license)}
-          </span>
-        </div>
-      </div>
-      {popupType === "delete" && isSelected !== null && (
-        <ModalDelete
-          onClose={handleCancel}
-          onSave={handleConfitm}
-          id={isSelected}
+      <h2 className="text-lg font-semibold mt-4">Motorista</h2>
+      {renderDriverInfo()}
+
+      {showDeleteModal && (
+        <ModalDelete 
+          onClose={handleModalClose} 
+          onSave={handleModalClose} 
+          id={delivery.id} 
         />
       )}
-      ;
     </div>
   );
 }
