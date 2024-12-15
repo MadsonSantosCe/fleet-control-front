@@ -17,7 +17,7 @@ import { Truck } from "@/types/Truck";
 import { Driver } from "@/types/Driver";
 import { z } from "zod";
 import toast from "react-hot-toast";
-import { formatDate } from "@/utils/stringUtils";
+import { formatDate, inputDate } from "@/utils/stringUtils";
 
 interface DeliveryDetailsProps {
   params: Promise<{ id: string }>;
@@ -44,7 +44,7 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
   const [driverName, setDriverName] = useState("");
   const [driverLicense, setDriverLicense] = useState("");
   const [deliveryId, setdeliveryId] = useState<number>(0);
-  const [deliveryTime, setDeliveryTime] = useState<Date | undefined>(undefined);
+  const [deliveryTime, setDeliveryTime] = useState<string>("");
   const [driversFetched, setDriversFetched] = useState(false);
   const [trucksFetched, setTrucksFetched] = useState(false);
 
@@ -62,7 +62,7 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
         const deliveryData = await getDeliveryById(id);
         setDelivery(deliveryData);
 
-        setDeliveryTime(new Date(deliveryData.deliveryTime));
+        setDeliveryTime(deliveryData.deliveryTime.toLocaleString());
         setValue(deliveryData.value.toString());
         setDestination(deliveryData.destination);
         setType(deliveryData.type);
@@ -100,9 +100,7 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
   };
 
   const handleDetails = () => {
-    if (delivery?.id) {
-      router.push(`/delivery/${delivery?.id}`);
-    }
+    router.push(`/delivery`);
   };
 
   const handleDriverChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -142,7 +140,7 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
         valuable,
         truckId: truckId as number,
         driverId: driverId as number,
-        deliveryTime: deliveryTime!,
+        deliveryTime: new Date(deliveryTime),
       };
 
       const response = await fetchUpdateDelivery(deliveryId, deliveryRequest);
@@ -166,12 +164,11 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
       const response = await updateDelivery(id, deliveryRequest);
       return response;
     } catch (error) {
-      console.error("Erro ao fazer a requisição de atualização:", error);
       throw error;
     }
   };
 
-  const formattedDate = deliveryTime ? formatDate(deliveryTime) : '';
+  const formattedDate = deliveryTime ? inputDate(deliveryTime) : "";
 
   return (
     <div className="p-8 max-w-4xl mx-auto">
@@ -194,19 +191,21 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
         </div>
       </div>
 
-      <div className="text-gray-600 flex items-center space-x-4 mb-10">
-        <p className="flex items-center space-x-2 text-sm">
-          <FontAwesomeIcon
-            icon={faCalendarAlt}
-            className="size-4 text-gray-500"
-          />
-          <span>{formattedDate}</span>
-        </p>
-      </div>
-
       <h2 className="text-lg font-semibold mt-4">Detalhes</h2>
-      <form className="space-y-6">
+      <form>
         <div className="border-t border-gray-200 py-4">
+          <div className="flex items-center justify-between my-4">
+            <span className="block text-gray-700">Data da Entrega</span>
+            <span className="font-medium w-2/3 text-left">
+              <input
+                type="datetime-local"
+                value={formattedDate}
+                onChange={(e) => setDeliveryTime(e.target.value)}
+                className="border-2 rounded-sm border-gray-200 p-2 w-full"
+              />
+            </span>
+          </div>
+
           <div className="flex items-center justify-between my-4">
             <span className="block text-gray-700">Valor</span>
             <span className="font-medium w-2/3 text-left">
@@ -290,8 +289,8 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
           </div>
         </div>
 
-        <h2 className="text-lg font-semibold mb-4">Caminhão</h2>
-        <div className="border-t border-gray-200 py-8">
+        <h2 className="text-lg font-semibold mt-4">Caminhão</h2>
+        <div className="border-t border-gray-200 py-4">
           <div className="flex items-center justify-between my-4">
             <span className="text-gray-600 w-1/3">Placa</span>
             <span className="font-medium w-2/3 text-left">
@@ -302,7 +301,7 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
                 className="border-2 rounded-sm border-gray-200 p-2 w-full"
                 required
               >
-                <option value={truckId || ""}>{truckLicensePlate}</option>
+                <option value="">Selecione um veículo</option>
                 {trucks &&
                   trucks.map((truck) => (
                     <option key={truck.id} value={truck.id}>
@@ -326,8 +325,8 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
           </div>
         </div>
 
-        <h2 className="text-lg font-semibold mb-4">Motorista</h2>
-        <div className="border-t border-gray-200 py-6">
+        <h2 className="text-lg font-semibold mt-4">Motorista</h2>
+        <div className="border-t border-gray-200 py-4">
           <div className="flex items-center justify-between my-4">
             <span className="text-gray-600 w-1/3">Nome</span>
             <span className="font-medium w-2/3 text-left">
@@ -338,7 +337,7 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
                 className="border-2 rounded-sm border-gray-200 p-2 w-full"
                 required
               >
-                <option value={driverId || ""}>{driverName}</option>
+                <option value="">Selecione um motorista</option>
                 {drivers &&
                   drivers.map((driver) => (
                     <option key={driver.id} value={driver.id}>

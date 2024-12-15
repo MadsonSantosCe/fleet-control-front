@@ -150,15 +150,15 @@ export default function EditDelivery() {
         </div>
       </div>
 
-      <h2 className="text-lg font-semibold mt-16">Detalhes</h2>
-      <form className="space-y-6">
+      <h2 className="text-lg font-semibold mt-10">Detalhes</h2>
+      <form>
         <div className="border-t border-gray-200 py-4">
-          <div className="flex items-center justify-between my-6">
+          <div className="flex items-center justify-between my-4">
             <span className="block text-gray-700">Data da Entrega</span>
             <span className="font-medium w-2/3 text-left">
               <input
-                type="date"
-                value={deliveryTime}
+                type="datetime-local"
+                value={deliveryTime.toLocaleString()}
                 onChange={(e) => setDeliveryTime(e.target.value)}
                 className="border-2 rounded-sm border-gray-200 p-2 w-full"
               />
@@ -217,7 +217,7 @@ export default function EditDelivery() {
           </div>
 
           {type === DeliveryType.Eletronico && (
-            <div className="flex items-center justify-between mt-10">
+            <div className="flex items-center justify-between mt-6">
               <span className="text-gray-600 w-1/3">Status</span>
               <span className="font-medium w-2/3 text-left">
                 <label className="text-green-600 font-semibold mr-2">
@@ -234,8 +234,8 @@ export default function EditDelivery() {
           )}
         </div>
 
-        <h2 className="text-lg font-semibold mb-4">Caminhão</h2>
-        <div className="border-t border-gray-200 py-8">
+        <h2 className="text-lg font-semibold mt-4">Caminhão</h2>
+        <div className="border-t border-gray-200 py-4">
           <div className="flex items-center justify-between my-4">
             <span className="text-gray-600 w-1/3">Placa</span>
             <span className="font-medium w-2/3 text-left">
@@ -245,7 +245,7 @@ export default function EditDelivery() {
                 className="border-2 rounded-sm border-gray-200 p-2 w-full"
                 required
               >
-                <option value={truckId || ""}>{truckLicensePlate}</option>
+                <option value="">Selecione um veículo</option>
                 {trucks &&
                   trucks.map((truck) => (
                     <option key={truck.id} value={truck.id}>
@@ -269,8 +269,8 @@ export default function EditDelivery() {
           </div>
         </div>
 
-        <h2 className="text-lg font-semibold mb-4">Motorista</h2>
-        <div className="border-t border-gray-200 py-6">
+        <h2 className="text-lg font-semibold mt-4">Motorista</h2>
+        <div className="border-t border-gray-200 py-4">
           <div className="flex items-center justify-between my-4">
             <span className="text-gray-600 w-1/3">Nome</span>
             <span className="font-medium w-2/3 text-left">
@@ -280,7 +280,7 @@ export default function EditDelivery() {
                 className="border-2 rounded-sm border-gray-200 p-2 w-full"
                 required
               >
-                <option value={driverId || ""}>{driverName}</option>
+                <option value="">Selecione um motorista</option>
                 {drivers &&
                   drivers.map((driver) => (
                     <option key={driver.id} value={driver.id}>

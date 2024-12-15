@@ -104,6 +104,10 @@ export default function DeliveryDetailsPage({ params }: DeliveryDetailsProps) {
 
   if (!delivery) return null;
 
+  const formattedDate = delivery.deliveryTime
+    ? formatDate(delivery.deliveryTime)
+    : "";
+
   return (
     <div className="p-8 max-w-4xl mx-auto">
       <div className="flex items-center justify-between mb-8">
@@ -124,15 +128,13 @@ export default function DeliveryDetailsPage({ params }: DeliveryDetailsProps) {
         </div>
       </div>
 
-      <div className="text-gray-600 flex items-center space-x-4 mb-10">
-        <p className="flex items-center space-x-2 text-sm">
-          <FontAwesomeIcon icon={faCalendarAlt} className="size-4 text-gray-500" />
-          <span>{formatDate(delivery.deliveryTime)}</span>
-        </p>
-      </div>
-
       <h2 className="text-lg font-semibold">Detalhes</h2>
-      <div className="border-t border-gray-200 py-4">
+      <div className="border-t border-gray-200 py-6">
+        <div className="flex items-center justify-between my-4">
+          <span className="text-gray-600 w-1/3">Data</span>
+          <span className="font-medium w-2/3 text-left">{formattedDate}</span>
+        </div>
+
         <div className="flex items-center justify-between my-4">
           <span className="text-gray-600 w-1/3">Valor</span>
           <span className="font-medium w-2/3 text-left">
@@ -142,7 +144,9 @@ export default function DeliveryDetailsPage({ params }: DeliveryDetailsProps) {
 
         <div className="flex items-center justify-between my-4">
           <span className="text-gray-600 w-1/3">Destino</span>
-          <span className="font-medium w-2/3 text-left">{delivery.destination}</span>
+          <span className="font-medium w-2/3 text-left">
+            {delivery.destination}
+          </span>
         </div>
 
         <div className="flex items-center justify-between my-4">
@@ -165,10 +169,10 @@ export default function DeliveryDetailsPage({ params }: DeliveryDetailsProps) {
       {renderDriverInfo()}
 
       {showDeleteModal && (
-        <ModalDelete 
-          onClose={handleModalClose} 
-          onSave={handleModalClose} 
-          id={delivery.id} 
+        <ModalDelete
+          onClose={handleModalClose}
+          onSave={handleModalClose}
+          id={delivery.id}
         />
       )}
     </div>
