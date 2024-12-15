@@ -89,7 +89,7 @@ export default function Deliveries() {
         ) : (
           <div className="flex flex-col items-center justify-center py-8">
             <p className="text-gray-500 text-lg">
-              Nada por aqui, cadastre um novo motorista e um caminhão
+              Nada por aqui, cadastre um caminhão e um motorista
             </p>
           </div>
         )
