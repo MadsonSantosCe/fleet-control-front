@@ -10,27 +10,39 @@ import ModalAdd from "@/app/components/modal/driver/modalAdd";
 import ModalEdit from "@/app/components/modal/driver/modalEdit";
 import ModalDelete from "@/app/components/modal/driver/modelDelete";
 import { formatCpf } from "@/utils/stringUtils";
+import { Loader } from "@/app/components/ui/loader";
 
-export default function Trucks() {
+export default function Drivers() {
   const [popupType, setPopupType] = useState<null | "add" | "edit" | "delete">(
     null
   );
   const [isSelected, setIsSelected] = useState<number | null>(null);
   const [drivers, setDrivers] = useState<Driver[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
   const router = useRouter();
 
   useEffect(() => {
-    setLoading(true);
+    const fetchApi = async () => {
+      try {
+        const response = await getDrivers();
+        setDrivers(response);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
     fetchApi();
-    setLoading(false);
   }, []);
 
-  const fetchApi = async () => {
-    const response = await getDrivers();
-    setDrivers(response);
-  };
+  if (isLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen">
+        <h1 className="mb-4 text-xl font-bold">Loading...</h1>
+        <Loader />
+      </div>
+    );
+  }
 
   const handleSave = () => {
     setPopupType(null);
@@ -65,10 +77,17 @@ export default function Trucks() {
           Cadastrar Motorista
         </button>
       </div>
-      <hr className="border-gray-200 mb-10" />
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-        {drivers.length > 0 &&
-          drivers.map((driver) => (
+      <hr className="border-gray-200 mb-6" />
+
+      {drivers.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-8">
+          <p className="text-gray-500 text-lg">
+            Nada por aqui, cadastre um novo motorista
+          </p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+          {drivers.map((driver) => (
             <div
               key={driver.id}
               className="flex flex-col items-center text-center space-y-4"
@@ -106,19 +125,9 @@ export default function Trucks() {
               </div>
             </div>
           ))}
-        {loading && (
-          <div className="flex flex-col items-center justify-center h-full text-center">
-            <div className="w-4 h-4 border-2 border-t-2 border-gray-200 rounded-full animate-spin"></div>
-          </div>
-        )}
-      </div>
-      <div>
-        {drivers.length === 0 && (
-          <h3 className="h-full text-center justify-center items-center py4 font-semibold">
-            Nada por aqui, cadastre um novo motorista
-          </h3>
-        )}
-      </div>
+        </div>
+      )}
+
       {popupType === "add" && (
         <ModalAdd onClose={handleCancel} onSave={handleSave} />
       )}
@@ -132,7 +141,6 @@ export default function Trucks() {
           id={isSelected}
         />
       )}
-      ;
     </div>
   );
 }

@@ -1,3 +1,6 @@
+import { Driver } from "./Driver";
+import { Truck } from "./Truck";
+
 export enum Destinations {
   Nordeste = "Nordeste",
   Sul = "Sul",
@@ -11,18 +14,6 @@ export enum DeliveryType {
   Combustivel = "Combustivel",
   Eletronico = "Eletronico",
   Quimico = "Quimico"
-}
-
-export interface Truck {
-  id: number;
-  licensePlate: string;
-  model: string;
-}
-
-export interface Driver {
-  id: number;
-  name: string;
-  license: string;
 }
 
 export interface Delivery {

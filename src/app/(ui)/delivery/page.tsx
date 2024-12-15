@@ -11,6 +11,7 @@ import { getDrivers } from "@/services/driver";
 import { getTrucks } from "@/services/truck";
 import { Truck } from "@/types/Truck";
 import { Driver } from "@/types/Driver";
+import { Loader } from "@/app/components/ui/loader";
 
 export default function Deliveries() {
   const [deliveries, setDeliveries] = useState<Delivery[]>([]);
@@ -18,21 +19,20 @@ export default function Deliveries() {
   const [drivers, setDrivers] = useState<Driver[] | null>([]);
   const [driversFetched, setDriversFetched] = useState(false);
   const [trucksFetched, setTrucksFetched] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchApi = async () => {
-      const response = await getDeliveries();
-      setDeliveries(response);
+      try {
+        const response = await getDeliveries();
+        setDeliveries(response);
+        await Promise.all([fetchDrivers(), fetchTrucks()]);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     fetchApi();
-    fetchDrivers();
-    fetchTrucks();
-  }, []);
-
-  useEffect(() => {
-    fetchDrivers();
-    fetchTrucks();
   }, []);
 
   const fetchDrivers = async () => {
@@ -51,6 +51,15 @@ export default function Deliveries() {
     }
   };
 
+  if (isLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen">
+        <h1 className="mb-4 text-xl font-bold">Loading...</h1>
+        <Loader />
+      </div>
+    );
+  }
+
   const truckExist = trucks && trucks.length > 0;
   const driverExist = drivers && drivers.length > 0;
 
@@ -68,21 +77,37 @@ export default function Deliveries() {
         )}
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="min-w-full text-sm mt-6">
-          <thead>
-            <tr className="text-left text-gray-500">
-              <th className="p-4 border-b border-gray-200">Data prevista</th>
-              <th className="p-4 border-b border-gray-200">Tipo</th>
-              <th className="p-4 border-b border-gray-200">Destino</th>
-              <th className="p-4 border-b border-gray-200">Valor</th>
-              <th className="p-4 border-b border-gray-200">Status</th>
-              <th className="p-4 border-b border-gray-200">Visualizar</th>
-            </tr>
-          </thead>
-          <tbody>
-            {deliveries.length > 0 ? (
-              deliveries.map((delivery) => (
+      <hr className="border-gray-200 mb-6" />
+
+      {deliveries.length === 0 ? (
+        truckExist && driverExist ? (
+          <div className="flex flex-col items-center justify-center py-8">
+            <p className="text-gray-500 text-lg">
+              Nada por aqui, cadastre uma nova entrega
+            </p>
+          </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center py-8">
+            <p className="text-gray-500 text-lg">
+              Nada por aqui, cadastre um novo motorista e um caminhão
+            </p>
+          </div>
+        )
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="min-w-full text-sm mt-6">
+            <thead>
+              <tr className="text-left text-gray-500">
+                <th className="p-4 border-b border-gray-200">Data prevista</th>
+                <th className="p-4 border-b border-gray-200">Tipo</th>
+                <th className="p-4 border-b border-gray-200">Destino</th>
+                <th className="p-4 border-b border-gray-200">Valor</th>
+                <th className="p-4 border-b border-gray-200">Status</th>
+                <th className="p-4 border-b border-gray-200">Visualizar</th>
+              </tr>
+            </thead>
+            <tbody>
+              {deliveries.map((delivery) => (
                 <tr
                   key={delivery.id}
                   className="hover:bg-gray-50 border-b border-gray-200"
@@ -121,7 +146,6 @@ export default function Deliveries() {
                         <span className="text-gray-500">Padrão</span>
                       )}
                   </td>
-
                   <td className="p-4 border-b pl-8 border-gray-200 flex">
                     <Link
                       href={`/delivery/${delivery.id}`}
@@ -132,25 +156,11 @@ export default function Deliveries() {
                     </Link>
                   </td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td
-                  colSpan={6}
-                  className="h-full text-center justify-center items-center py-4 font-semibold"
-                ></td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
-      <div>
-        {deliveries.length === 0 && (
-          <h3 className="h-full text-center justify-center items-center  font-semibold">
-            Nada por aqui, cadastre um novo motorista e um caminhão
-          </h3>
-        )}
-      </div>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 }
