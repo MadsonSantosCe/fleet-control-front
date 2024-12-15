@@ -151,11 +151,9 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
         setTimeout(() => {
           router.push(`/delivery/${delivery?.id}`);
         }, 2000);
-      } else {
-        throw new Error("Erro ao atualizar a entrega.");
       }
     } catch (error) {
-      toast.error(`Erro: ${error}`, { duration: 6000 });
+      toast.error(`${error}`, { duration: 6000 });
     }
   }
 
