@@ -109,7 +109,7 @@ export default function ModalEdit({ isOpen, onSave, onClose, id }: Props) {
         </DialogHeader>
         <DialogDescription></DialogDescription>
         <div className="mt-4 space-y-4">
-          <div>
+        <div className="rounded-md border border-input border-gray-300 focus-visible:outline-none">
             <Input
               value={nameField}
               placeholder="Digite o nome do motorista"
@@ -121,7 +121,7 @@ export default function ModalEdit({ isOpen, onSave, onClose, id }: Props) {
             )}
           </div>
 
-          <div>
+          <div className="rounded-md border border-input border-gray-300 focus-visible:outline-none">
             <Input
               value={licenseField}
               placeholder="Digite a CNH do motorista"
