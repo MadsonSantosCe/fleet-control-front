@@ -1,40 +1,64 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimes } from "@fortawesome/free-solid-svg-icons";
-import { deleteDriver, getDriverById, updateDriver } from "@/services/driver";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogClose,
+  DialogFooter,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import {
+  Card,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { deleteDriver, getDriverById } from "@/services/driver";
 import { toast } from "react-hot-toast";
 
 type Props = {
+  isOpen: boolean;
   onClose: () => void;
   onSave: () => void;
   id: number;
 };
 
-export default function ModalDelete({ onSave, onClose, id }: Props) {
+export default function ModalDelete({ isOpen, onSave, onClose, id }: Props) {
   const [nameField, setNameField] = useState("");
   const [licenseField, setLicenseField] = useState("");
-  const [apiError, setApiError] = useState(false);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    fetchGetDriverById(id);
-  }, []);
+    if (isOpen) {
+      fetchGetDriverById(id);
+    }
+  }, [isOpen, id]);
 
   const fetchGetDriverById = async (id: number) => {
-    const driver = await getDriverById(id);
-    if (driver) {
-      setNameField(driver.name);
-      setLicenseField(driver.license);
+    try {
+      const driver = await getDriverById(id);
+      if (driver) {
+        setNameField(driver.name);
+        setLicenseField(driver.license);
+      }
+    } catch (error: any) {
+      toast.error(
+        error?.message || "Erro ao buscar os detalhes do motorista.",
+        { duration: 4000 }
+      );
+      onClose();
     }
   };
 
   const handleDelete = async () => {
     try {
       await fetchDeleteDriver(id);
-      setApiError(false);
-
       setTimeout(() => {
         window.location.reload();
       }, 1000);
@@ -45,55 +69,49 @@ export default function ModalDelete({ onSave, onClose, id }: Props) {
 
   const fetchDeleteDriver = async (id: number) => {
     const response = await deleteDriver(id);
-    setLoading(false);
+    return response;
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
-      <div className="bg-white rounded-lg p-6 w-1/4 shadow-lg relative">
-        <button
-          onClick={onClose}
-          className="absolute top-6 right-7 w-2 h-2 p-3 flex items-center justify-center rounded-full bg-black text-white text-sm font-semibold hover:bg-gray-700"
-        >
-          <FontAwesomeIcon icon={faTimes} className="size-4" />
-        </button>
-
-        <div>
-          <h2 className="text-xl font-semibold mb-10">
-            Deseja deletar o morista
-          </h2>
-
-          <div className="flex justify-left items-center mb-6 ">
-            <img
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="sm:max-w-md w-full">
+        <DialogHeader>
+          <DialogTitle>Deseja deletar o motorista?</DialogTitle>
+          <DialogClose className="absolute top-4 right-4" />
+        </DialogHeader>
+        <DialogDescription></DialogDescription>
+        <CardHeader className="flex flex-row items-center space-x-4">
+          <Avatar className="w-24 h-24 flex-shrink-0">
+            <AvatarImage
               src={
                 "https://user-images.githubusercontent.com/11250/39013954-f5091c3a-43e6-11e8-9cac-37cf8e8c8e4e.jpg"
               }
-              alt="Driver Profile"
-              className="w-24 h-24 rounded-full mr-6 p-2"
+              alt={`Avatar de ${nameField}`}
+              className="w-24 h-24 rounded-full object-cover object-center transition-transform duration-200 hover:scale-105"
             />
-            <div>
-              <h3 className="text-lg font-semibold">{nameField}</h3>
-              <p className="text-gray-600">CNH: {licenseField}</p>
-            </div>
+            <AvatarFallback>{nameField ? nameField : "?"}</AvatarFallback>
+          </Avatar>
+          <div className="flex flex-col">
+            <CardTitle className="text-lg font-semibold">{nameField}</CardTitle>
+            <CardDescription className="text-sm text-gray-500">
+              CNH: {licenseField}
+            </CardDescription>
           </div>
+        </CardHeader>
 
-          <div className="flex justify-end space-x-4 mt-10">
-            <button
-              onClick={onClose}
-              className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-100"
-            >
-              Cancelar
-            </button>
-            <button
-              onClick={handleDelete}
-              className="px-6 py-2 bg-red-600 text-white text-sm rounded-lg hover:bg-red-700"
-              disabled={loading}
-            >
-              Deletar
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+        <DialogFooter className="mt-6 flex justify-end space-x-3">
+          <Button variant="ghost" onClick={onClose}>
+            Cancelar
+          </Button>
+          <Button
+            variant="destructive"
+            onClick={handleDelete}
+            disabled={loading}
+          >
+            Deletar
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }

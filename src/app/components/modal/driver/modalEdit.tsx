@@ -1,9 +1,19 @@
+// ModalEdit.tsx
+
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimes } from "@fortawesome/free-solid-svg-icons";
-import { Input } from "@/app/components/ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogClose,
+  DialogFooter,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { z } from "zod";
 import { Driver } from "@/types/Driver";
 import { getDriverById, updateDriver } from "@/services/driver";
@@ -14,32 +24,43 @@ const schema = z.object({
     .string()
     .min(3, { message: "O nome deve ter pelo menos 3 caracteres" }),
   licenseField: z.string().length(11, {
-    message: "O CPF deve ter exatamente 11 dígitos e apenas números",
+    message: "A CNH deve ter exatamente 11 dígitos e apenas números",
   }),
 });
 
 type Props = {
+  isOpen: boolean;
   onClose: () => void;
   onSave: () => void;
   id: number;
 };
 
-export default function ModalEdit({ onSave, onClose, id }: Props) {
+export default function ModalEdit({ isOpen, onSave, onClose, id }: Props) {
   const [nameField, setNameField] = useState("");
   const [licenseField, setLicenseField] = useState("");
   const [errors, setErrors] = useState({ nameField: "", licenseField: "" });
-  const [apiError, setApiError] = useState(false);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    fetchGetDriverById(id);
-  }, []);
+    if (isOpen) {
+      fetchGetDriverById(id);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen, id]);
 
   const fetchGetDriverById = async (id: number) => {
-    const driver = await getDriverById(id);
-    if (driver) {
-      setNameField(driver.name);
-      setLicenseField(driver.license);
+    try {
+      const driver = await getDriverById(id);
+      if (driver) {
+        setNameField(driver.name);
+        setLicenseField(driver.license);
+      }
+    } catch (error: any) {
+      toast.error(
+        error?.message || "Erro ao buscar os detalhes do motorista.",
+        { duration: 4000 }
+      );
+      onClose();
     }
   };
 
@@ -62,70 +83,69 @@ export default function ModalEdit({ onSave, onClose, id }: Props) {
           license: licenseField,
         });
         setErrors({ nameField: "", licenseField: "" });
-        setApiError(false);
-
-        setTimeout(() => {
-          window.location.reload();
-        }, 1000);
-      } catch (error) {
-        toast.error(`${error}`, { duration: 4000 });
+        toast.success("Motorista atualizado com sucesso!", { duration: 4000 });
+        onSave(); // Atualiza a lista de motoristas no componente pai
+      } catch (error: any) {
+        toast.error(`${error?.message || "Erro ao atualizar motorista"}`, {
+          duration: 4000,
+        });
       }
     }
   };
 
   const fetchUpdateDriver = async (id: number, driver: Driver) => {
+    setLoading(true);
     const response = await updateDriver(id, driver);
+    setLoading(false);
     return response;
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
-      <div className="bg-white rounded-lg p-6 w-1/4 shadow-lg relative">
-        <button
-          onClick={onClose}
-          className="absolute top-6 right-7 w-2 h-2 p-3 flex items-center justify-center rounded-full bg-black text-white text-sm font-semibold hover:bg-gray-700"
-        >
-          <FontAwesomeIcon icon={faTimes} className="size-4" />
-        </button>
-
-        <div>
-          <h2 className="text-xl font-semibold mb-10">Editar motorista</h2>
-
-          <div className="mb-4">
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="sm:max-w-lg w-full">
+        <DialogHeader>
+          <DialogTitle>Editar Motorista</DialogTitle>
+          <DialogClose className="absolute top-4 right-4" />
+        </DialogHeader>
+        <DialogDescription></DialogDescription>
+        <div className="mt-4 space-y-4">
+          <div>
             <Input
               value={nameField}
-              placeholder="Digite o nome do colaborador"
+              placeholder="Digite o nome do motorista"
               onChange={(e) => setNameField(e.target.value)}
-              errorMessage={errors.nameField}
+              aria-label="Nome do motorista"
             />
+            {errors.nameField && (
+              <p className="text-red-500 text-sm mt-1">{errors.nameField}</p>
+            )}
           </div>
 
-          <div className="mb-4">
+          <div>
             <Input
               value={licenseField}
-              placeholder="Digite a CNH do colaborador"
+              placeholder="Digite a CNH do motorista"
               onChange={(e) => setLicenseField(e.target.value)}
-              errorMessage={errors.licenseField}
+              aria-label="CNH do motorista"
             />
-          </div>
-
-          <div className="flex justify-end space-x-4 mt-10">
-            <button
-              onClick={onClose}
-              className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-100"
-            >
-              Cancelar
-            </button>
-            <button
-              onClick={handleUpdate}
-              className="px-4 py-2 rounded-md text-white bg-black hover:bg-gray-900"
-              disabled={loading}
-            >
-              Salvar
-            </button>
+            {errors.licenseField && (
+              <p className="text-red-500 text-sm mt-1">{errors.licenseField}</p>
+            )}
           </div>
         </div>
-      </div>
-    </div>
+        <DialogFooter className="mt-6 flex justify-end space-x-3">
+          <Button variant="ghost" onClick={onClose}>
+            Cancelar
+          </Button>
+          <Button
+            onClick={handleUpdate}
+            disabled={loading}
+            className="bg-black text-white text-sm px-4 py-2 rounded-lg hover:bg-gray-800"
+          >
+            Salvar
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }

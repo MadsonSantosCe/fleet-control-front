@@ -1,9 +1,19 @@
+// ModalEdit.tsx
+
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimes } from "@fortawesome/free-solid-svg-icons";
-import { Input } from "@/app/components/ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogClose,
+  DialogFooter,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { z } from "zod";
 import { toast } from "react-hot-toast";
 import { getTruckById, updateTruck } from "@/services/truck";
@@ -13,20 +23,19 @@ const schema = z.object({
   modelField: z
     .string()
     .min(3, { message: "O nome deve ter pelo menos 3 caracteres" }),
-  licensePlatefield: z
-    .string()
-    .length(7, {
-      message: "O CPF deve ter exatamente 11 dígitos e apenas números",
-    }),
+  licensePlatefield: z.string().length(7, {
+    message: "A placa deve ter exatamente 7 dígitos sem traço",
+  }),
 });
 
 type Props = {
+  isOpen: boolean;
   onClose: () => void;
   onSave: () => void;
   id: number;
 };
 
-export default function ModalEdit({ onSave, onClose, id }: Props) {
+export default function ModalEdit({ isOpen, onSave, onClose, id }: Props) {
   const [modelField, setModelField] = useState("");
   const [licensePlatefield, setLicensePlatefield] = useState("");
   const [errors, setErrors] = useState({
@@ -37,14 +46,23 @@ export default function ModalEdit({ onSave, onClose, id }: Props) {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    fetchGetTruckById(id);
-  }, []);
+    if (isOpen) {
+      fetchGetTruckById(id);
+    }
+  }, [isOpen, id]);
 
   const fetchGetTruckById = async (id: number) => {
-    const truck = await getTruckById(id);
-    if (truck) {
-      setModelField(truck.model);
-      setLicensePlatefield(truck.licensePlate);
+    try {
+      const truck = await getTruckById(id);
+      if (truck) {
+        setModelField(truck.model);
+        setLicensePlatefield(truck.licensePlate);
+      }
+    } catch (error: any) {
+      toast.error(error?.message || "Erro ao buscar os detalhes do caminhão.", {
+        duration: 4000,
+      });
+      onClose();
     }
   };
 
@@ -86,53 +104,53 @@ export default function ModalEdit({ onSave, onClose, id }: Props) {
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
-      <div className="bg-white rounded-lg p-6 w-1/4 shadow-lg relative">
-        <button
-          onClick={onClose}
-          className="absolute top-6 right-7 w-2 h-2 p-3 flex items-center justify-center rounded-full bg-black text-white text-sm font-semibold hover:bg-gray-700"
-        >
-          <FontAwesomeIcon icon={faTimes} className="size-4" />
-        </button>
-
-        <div>
-          <h2 className="text-xl font-semibold mb-10">Editar motorista</h2>
-
-          <div className="mb-4">
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="sm:max-w-lg w-full">
+        <DialogHeader>
+          <DialogTitle>Editar Veículo</DialogTitle>
+          <DialogClose className="absolute top-4 right-4" />
+        </DialogHeader>
+        <DialogDescription></DialogDescription>
+        <div className="mt-4 space-y-4">
+          <div>
             <Input
               value={modelField}
-              placeholder="Digite o nome do colaborador"
+              placeholder="Digite o nome do modelo"
               onChange={(e) => setModelField(e.target.value)}
-              errorMessage={errors.modelField}
+              aria-label="Modelo do veículo"
             />
+            {errors.modelField && (
+              <p className="text-red-500 text-sm mt-1">{errors.modelField}</p>
+            )}
           </div>
 
-          <div className="mb-4">
+          <div>
             <Input
               value={licensePlatefield}
-              placeholder="Digite o CPF do colaborador"
+              placeholder="Digite a placa do veículo"
               onChange={(e) => setLicensePlatefield(e.target.value)}
-              errorMessage={errors.licensePlatefield}
+              aria-label="Placa do veículo"
             />
-          </div>
-
-          <div className="flex justify-end space-x-4 mt-10">
-            <button
-              onClick={onClose}
-              className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-100"
-            >
-              Cancelar
-            </button>
-            <button
-              onClick={handleUpdate}
-              className="px-4 py-2 rounded-md text-white bg-black hover:bg-gray-900"
-              disabled={loading}
-            >
-              Salvar
-            </button>
+            {errors.licensePlatefield && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.licensePlatefield}
+              </p>
+            )}
           </div>
         </div>
-      </div>
-    </div>
+        <DialogFooter className="mt-6 flex justify-end space-x-3">
+          <Button variant="ghost" onClick={onClose}>
+            Cancelar
+          </Button>
+          <Button
+            onClick={handleUpdate}
+            disabled={loading}
+            className="bg-black text-white text-sm px-4 py-2 rounded-lg hover:bg-gray-800"
+          >
+            Salvar
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }

@@ -6,6 +6,9 @@ import Link from "next/link";
 import { formatDate } from "@/utils/stringUtils";
 import ModalDelete from "@/app/components/modal/delivery/modelDelete";
 import { Loader } from "@/app/components/ui/loader";
+import toast from "react-hot-toast";
+
+
 
 interface DeliveryDetailsProps {
   params: Promise<{ id: string }>;
@@ -27,6 +30,8 @@ export default function DeliveryDetailsPage({ params }: DeliveryDetailsProps) {
         const deliveryData = await getDeliveryById(id);
         setDelivery(deliveryData);
       }
+    } catch (error) {
+      toast.error(`Erro ao buscar detalhes: ${error}`, { duration: 6000 });
     } finally {
       setIsLoading(false);
     }
@@ -165,8 +170,9 @@ export default function DeliveryDetailsPage({ params }: DeliveryDetailsProps) {
       <h2 className="text-lg font-semibold mt-4">Motorista</h2>
       {renderDriverInfo()}
 
-      {showDeleteModal && (
+      {showDeleteModal && delivery && (
         <ModalDelete
+          isOpen={showDeleteModal}
           onClose={handleModalClose}
           onSave={handleModalClose}
           id={delivery.id}

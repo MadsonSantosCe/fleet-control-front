@@ -14,9 +14,9 @@ export default function Layout({ children }: Props) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <main className="flex min-h-screen bg-gray-100 flex-col sm:flex-row">
+    <main className="flex min-h-screen bg-gray-100 flex-col sm:flex-row relative">
       <header className="bg-white w-full p-4 border-b border-gray-200 flex items-center justify-between sm:hidden">
-        <Link href={"/driver"}>
+        <Link href={"/delivery"}>
           <span className="text-lg font-semibold">Dashboard</span>
         </Link>
         <button
@@ -37,7 +37,7 @@ export default function Layout({ children }: Props) {
         ${isMenuOpen ? "translate-x-0" : "-translate-x-full sm:translate-x-0"}`}
       >
         <div className="flex items-center space-x-2 mb-6 border-b border-gray-200 py-6">
-          <Link href={"/driver"}>
+          <Link href={"/delivery"}>
             <span className="text-lg font-semibold">Dashboard</span>
           </Link>
         </div>
@@ -52,7 +52,7 @@ export default function Layout({ children }: Props) {
 
       {isMenuOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 sm:hidden"
+          className="fixed inset-0 bg-black bg-opacity-50 sm:hidden z-40"
           onClick={() => setIsMenuOpen(false)}
         ></div>
       )}

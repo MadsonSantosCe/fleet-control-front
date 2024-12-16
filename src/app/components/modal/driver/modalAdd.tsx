@@ -1,29 +1,40 @@
+// ModalAdd.tsx
+
 "use client";
 
 import React, { useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogClose,
+  DialogFooter,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { z } from "zod";
 import { Driver } from "@/types/Driver";
 import { createDriver } from "@/services/driver";
 import { toast } from "react-hot-toast";
-import { Input } from "@/app/components/ui/input";
 
 const schema = z.object({
   nameField: z
     .string()
     .min(3, { message: "O nome deve ter pelo menos 3 caracteres" }),
   licenseField: z.string().length(11, {
-    message: "O CPF deve ter exatamente 11 dígitos e apenas números",
+    message: "A CNH deve ter exatamente 11 dígitos e apenas números",
   }),
 });
 
 type Props = {
+  isOpen: boolean;
   onClose: () => void;
   onSave: () => void;
 };
 
-export default function ModalAdd({ onSave, onClose }: Props) {
+export default function ModalAdd({ isOpen, onSave, onClose }: Props) {
   const [nameField, setNameField] = useState("");
   const [licenseField, setLicenseField] = useState("");
   const [errors, setErrors] = useState({ nameField: "", licenseField: "" });
@@ -52,8 +63,10 @@ export default function ModalAdd({ onSave, onClose }: Props) {
         setTimeout(() => {
           window.location.reload();
         }, 1000);
-      } catch (error) {
-        toast.error(`${error}`, { duration: 4000 });
+      } catch (error: any) {
+        toast.error(`${error.message || "Erro ao criar motorista"}`, {
+          duration: 4000,
+        });
       }
     }
   };
@@ -64,52 +77,50 @@ export default function ModalAdd({ onSave, onClose }: Props) {
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
-      <div className="bg-white rounded-lg p-6 w-1/4 shadow-lg relative">
-        <button
-          onClick={onClose}
-          className="absolute top-6 right-7 w-2 h-2 p-3 flex items-center justify-center rounded-full bg-black text-white text-sm font-semibold hover:bg-gray-700"
-        >
-          <FontAwesomeIcon icon={faTimes} className="size-4" />
-        </button>
-
-        <div>
-          <h2 className="text-xl font-semibold mb-10">Novo motorista</h2>
-
-          <div className="mb-4">
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="sm:max-w-md w-full">
+        <DialogHeader>
+          <DialogTitle>Novo Motorista</DialogTitle>
+          <DialogClose className="absolute top-4 right-4" />
+        </DialogHeader>
+        <DialogDescription></DialogDescription>
+        <div className="mt-4 space-y-4">
+          <div>
             <Input
               value={nameField}
-              placeholder="Digite o nome do colaborador"
+              placeholder="Digite o nome do motorista"
               onChange={(e) => setNameField(e.target.value)}
-              errorMessage={errors.nameField}
+              aria-label="Nome do motorista"
             />
+            {errors.nameField && (
+              <p className="text-red-500 text-sm mt-1">{errors.nameField}</p>
+            )}
           </div>
 
-          <div className="mb-4">
+          <div>
             <Input
               value={licenseField}
-              placeholder="Digite a CNH do colaborador"
+              placeholder="Digite a CNH do motorista"
               onChange={(e) => setLicenseField(e.target.value)}
-              errorMessage={errors.licenseField}
+              aria-label="CNH do motorista"
             />
-          </div>
-
-          <div className="flex justify-end space-x-4 mt-10">
-            <button
-              onClick={onClose}
-              className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-100"
-            >
-              Cancelar
-            </button>
-            <button
-              onClick={handleSave}
-              className="px-4 py-2 rounded-md text-white bg-black hover:bg-gray-900"
-            >
-              Salvar
-            </button>
+            {errors.licenseField && (
+              <p className="text-red-500 text-sm mt-1">{errors.licenseField}</p>
+            )}
           </div>
         </div>
-      </div>
-    </div>
+        <DialogFooter className="mt-6 flex justify-end space-x-3">
+          <Button variant="ghost" onClick={onClose}>
+            Cancelar
+          </Button>
+          <Button
+            onClick={handleSave}
+            className="bg-black text-white text-sm px-4 py-2 rounded-lg hover:bg-gray-800"
+          >
+            Salvar
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }

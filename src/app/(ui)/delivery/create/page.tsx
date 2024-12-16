@@ -14,7 +14,6 @@ import { getTrucks } from "@/services/truck";
 import { Truck } from "@/types/Truck";
 import { Driver } from "@/types/Driver";
 import toast from "react-hot-toast";
-import { formatCpf } from "@/utils/stringUtils";
 
 export default function EditDelivery() {
   const [delivery, setDelivery] = useState<Delivery | null>(null);
@@ -246,7 +245,7 @@ export default function EditDelivery() {
                 className="border-2 rounded-sm border-gray-200 p-2 w-full"
                 required
               >
-                <option value={truckId || ""}>{truckLicensePlate}</option>
+                <option value="">Escolha um veículo</option>
                 {trucks &&
                   trucks.map((truck) => (
                     <option key={truck.id} value={truck.id}>
@@ -281,7 +280,7 @@ export default function EditDelivery() {
                 className="border-2 rounded-sm border-gray-200 p-2 w-full"
                 required
               >
-                <option value={driverId || ""}>{driverName}</option>
+                <option value="">Escolha um motorista</option>
                 {drivers &&
                   drivers.map((driver) => (
                     <option key={driver.id} value={driver.id}>
@@ -297,7 +296,7 @@ export default function EditDelivery() {
             <span className="font-medium w-2/3 text-left">
               <input
                 type="text"
-                value={driverLicense && formatCpf(driverLicense)}
+                value={driverLicense}
                 readOnly
                 className="border-2 rounded-sm border-gray-200 p-2 w-full bg-gray-100"
               />
