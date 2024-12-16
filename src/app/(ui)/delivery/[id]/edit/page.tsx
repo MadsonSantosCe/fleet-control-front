@@ -16,6 +16,15 @@ import { Driver } from "@/types/Driver";
 import { z } from "zod";
 import toast from "react-hot-toast";
 import { inputDate } from "@/utils/stringUtils";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface DeliveryDetailsProps {
   params: Promise<{ id: string }>;
@@ -101,8 +110,8 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
     router.push(`/delivery`);
   };
 
-  const handleDriverChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedDriverId = Number(e.target.value);
+  const handleDriverChange = (value: string) => {
+    const selectedDriverId = Number(value);
     const selectedDriver = drivers?.find(
       (driver) => driver.id === selectedDriverId
     );
@@ -114,8 +123,8 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
     }
   };
 
-  const handleTruckChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedTruckId = Number(e.target.value);
+  const handleTruckChange = (value: string) => {
+    const selectedTruckId = Number(value);
     const selectedTruck = trucks?.find((truck) => truck.id === selectedTruckId);
 
     if (selectedTruck) {
@@ -189,25 +198,28 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
         </div>
       </div>
 
-      <h2 className="text-lg font-semibold mt-4">Detalhes</h2>
+      <h2 className="text-lg font-semibold mt-2">Detalhes</h2>
       <form>
         <div className="border-t border-gray-200 py-4">
           <div className="flex items-center justify-between my-4">
             <span className="block text-gray-700">Data da Entrega</span>
             <span className="font-medium w-2/3 text-left">
-              <input
-                type="datetime-local"
-                value={formattedDate}
-                onChange={(e) => setDeliveryTime(e.target.value)}
-                className="border-2 rounded-sm border-gray-200 p-2 w-full"
-              />
+              <div className="relative">
+                <input
+                  type="datetime-local"
+                  value={formattedDate}
+                  onChange={(e) => setDeliveryTime(e.target.value)}
+                  className="text-sm border-2 rounded-sm border-gray-200 p-2 w-full"
+                  required
+                />
+              </div>
             </span>
           </div>
 
           <div className="flex items-center justify-between my-4">
             <span className="block text-gray-700">Valor</span>
             <span className="font-medium w-2/3 text-left">
-              <input
+              <Input
                 type="number"
                 min="0"
                 value={value}
@@ -221,50 +233,53 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
           <div className="flex items-center justify-between my-4">
             <span className="text-gray-600 w-1/3">Destino</span>
             <span className="font-medium w-2/3 text-left">
-              <select
+              <Select
                 value={destination}
-                onChange={(e) => setDestination(e.target.value as Destinations)}
-                className="border-2 rounded-sm border-gray-200 p-2 w-full"
-                required
+                onValueChange={(value) => setDestination(value as Destinations)}
               >
-                <option value="">Selecione um destino</option>
-                {Object.values(Destinations).map((dest) => (
-                  <option key={dest} value={dest}>
-                    {dest}
-                  </option>
-                ))}
-              </select>
+                <SelectTrigger className="w-full border-2 border-gray-200 rounded-sm p-2">
+                  <SelectValue placeholder="Selecione um destino" />
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.values(Destinations).map((dest) => (
+                    <SelectItem key={dest} value={dest}>
+                      {dest}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </span>
           </div>
 
           <div className="flex items-center justify-between my-4">
             <span className="text-gray-600 w-1/3">Tipo</span>
             <span className="font-medium w-2/3 text-left">
-              <select
+              <Select
                 value={type}
-                onChange={(e) => setType(e.target.value as DeliveryType)}
-                className="border-2 rounded-sm border-gray-200 p-2 w-full"
-                required
+                onValueChange={(value) => setType(value as DeliveryType)}
               >
-                <option value="">Selecione um tipo</option>
-                {Object.values(DeliveryType).map((t) => (
-                  <option key={t} value={t}>
-                    {t}
-                  </option>
-                ))}
-              </select>
+                <SelectTrigger className="w-full border-2 border-gray-200 rounded-sm p-2">
+                  <SelectValue placeholder="Selecione um tipo entrega" />
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.values(DeliveryType).map((dest) => (
+                    <SelectItem key={dest} value={dest}>
+                      {dest}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </span>
           </div>
 
-          <div className="flex items-center justify-between mt-8">
+          <div className="flex items-center justify-between mt-6">
             <span className="text-gray-600 w-1/3">Status</span>
             <span className="font-medium w-2/3 text-left">
               {type === DeliveryType.Eletronico && (
-                <label className="text-green-600 font-semibold mr-2">
-                  <input
-                    type="checkbox"
+                <label className="flex items-center text-green-600 font-semibold">
+                  <Checkbox
                     checked={insurance}
-                    onChange={(e) => setInsurance(e.target.checked)}
+                    onCheckedChange={(checked) => setInsurance(!!checked)}
                     className="mr-2"
                   />
                   <span>Com seguro</span>
@@ -288,26 +303,31 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
           </div>
         </div>
 
-        <h2 className="text-lg font-semibold mt-4">Caminhão</h2>
-        <div className="border-t border-gray-200 py-4">
+        <h2 className="text-lg font-semibold mt-2">Caminhão</h2>
+        <div className="border-t border-gray-200 py-2">
           <div className="flex items-center justify-between my-4">
             <span className="text-gray-600 w-1/3">Placa</span>
             <span className="font-medium w-2/3 text-left">
-              <select
-                value={truckId || ""}
-                onChange={handleTruckChange}
-                onFocus={fetchTrucks}
-                className="border-2 rounded-sm border-gray-200 p-2 w-full"
-                required
-              >
-                <option value={truckId || ""}>{truckLicensePlate}</option>
-                {trucks &&
-                  trucks.map((truck) => (
-                    <option key={truck.id} value={truck.id}>
-                      {truck.licensePlate}
-                    </option>
-                  ))}
-              </select>
+              <div onFocus={fetchTrucks}>
+                <Select
+                  value={truckId?.toString()}
+                  onValueChange={handleTruckChange}
+                >
+                  <SelectTrigger className="w-full border-2 rounded-sm border-gray-200 p-2">
+                    <SelectValue>
+                      {truckId ? truckLicensePlate : "Selecione um caminhão"}
+                    </SelectValue>
+                  </SelectTrigger>
+                  <SelectContent>
+                    {trucks &&
+                      trucks.map((truck) => (
+                        <SelectItem key={truck.id} value={truck.id.toString()}>
+                          {truck.licensePlate}
+                        </SelectItem>
+                      ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </span>
           </div>
 
@@ -324,33 +344,41 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
           </div>
         </div>
 
-        <h2 className="text-lg font-semibold mt-4">Motorista</h2>
-        <div className="border-t border-gray-200 py-4">
+        <h2 className="text-lg font-semibold mt-2">Motorista</h2>
+        <div className="border-t border-gray-200 py-2">
           <div className="flex items-center justify-between my-4">
             <span className="text-gray-600 w-1/3">Nome</span>
             <span className="font-medium w-2/3 text-left">
-              <select
-                value={driverId || ""}
-                onChange={handleDriverChange}
-                onFocus={fetchDrivers}
-                className="border-2 rounded-sm border-gray-200 p-2 w-full"
-                required
-              >
-                <option value={driverId || ""}>{driverName}</option>
-                {drivers &&
-                  drivers.map((driver) => (
-                    <option key={driver.id} value={driver.id}>
-                      {driver.name}
-                    </option>
-                  ))}
-              </select>
+              <div onFocus={fetchDrivers}>
+                <Select
+                  value={driverId?.toString()}
+                  onValueChange={handleDriverChange}
+                >
+                  <SelectTrigger className="w-full border-2 rounded-sm border-gray-200 p-2">
+                    <SelectValue>
+                      {driverId ? driverName : "Selecione um caminhão"}
+                    </SelectValue>
+                  </SelectTrigger>
+                  <SelectContent>
+                    {drivers &&
+                      drivers.map((driver) => (
+                        <SelectItem
+                          key={driver.id}
+                          value={driver.id.toString()}
+                        >
+                          {driver.name}
+                        </SelectItem>
+                      ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </span>
           </div>
 
           <div className="flex items-center justify-between my-4">
             <span className="text-gray-600 w-1/3">CNH</span>
             <span className="font-medium w-2/3 text-left">
-              <input
+              <Input
                 type="text"
                 value={driverLicense}
                 readOnly
