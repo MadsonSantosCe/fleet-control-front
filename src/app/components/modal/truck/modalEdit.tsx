@@ -15,7 +15,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { z } from "zod";
-import { toast } from "react-hot-toast";
+import { useToast } from "@/hooks/use-toast";
 import { getTruckById, updateTruck } from "@/services/truck";
 import { Truck } from "@/types/Truck";
 
@@ -44,6 +44,7 @@ export default function ModalEdit({ isOpen, onSave, onClose, id }: Props) {
   });
   const [apiError, setApiError] = useState(false);
   const [loading, setLoading] = useState(false);
+  const { toast } = useToast();
 
   useEffect(() => {
     if (isOpen) {
@@ -59,7 +60,10 @@ export default function ModalEdit({ isOpen, onSave, onClose, id }: Props) {
         setLicensePlatefield(truck.licensePlate);
       }
     } catch (error: any) {
-      toast.error(error?.message || "Erro ao buscar os detalhes do caminhão.", {
+      toast({
+        variant: "destructive",
+        title: "Ateção.",
+        description: `${error?.message}`,
         duration: 4000,
       });
       onClose();
@@ -86,12 +90,19 @@ export default function ModalEdit({ isOpen, onSave, onClose, id }: Props) {
         });
         setErrors({ modelField: "", licensePlatefield: "" });
         setApiError(false);
-
-        setTimeout(() => {
-          window.location.reload();
-        }, 1000);
+        toast({
+          title: "Ateção.",
+          description: "Veículo atualizado com sucesso!",
+          duration: 4000,
+        });
+        onSave();
       } catch (error) {
-        toast.error(`${error}`, { duration: 4000 });
+        toast({
+          variant: "destructive",
+          title: "Ateção.",
+          description: `${error}`,
+          duration: 4000,
+        });
       }
     }
   };
@@ -112,7 +123,7 @@ export default function ModalEdit({ isOpen, onSave, onClose, id }: Props) {
         </DialogHeader>
         <DialogDescription></DialogDescription>
         <div className="mt-4 space-y-4">
-        <div className="rounded-md border border-input border-gray-300 focus-visible:outline-none">
+          <div className="rounded-md border border-input border-gray-300 focus-visible:outline-none">
             <Input
               value={modelField}
               placeholder="Digite o nome do modelo"

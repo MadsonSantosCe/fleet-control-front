@@ -7,8 +7,7 @@ import { formatDate } from "@/utils/stringUtils";
 import ModalDelete from "@/app/components/modal/delivery/modelDelete";
 import { Loader } from "@/app/components/ui/loader";
 import toast from "react-hot-toast";
-
-
+import { useRouter } from "next/navigation";
 
 interface DeliveryDetailsProps {
   params: Promise<{ id: string }>;
@@ -18,6 +17,7 @@ export default function DeliveryDetailsPage({ params }: DeliveryDetailsProps) {
   const [delivery, setDelivery] = useState<Delivery | null>(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     fetchDeliveryDetails();
@@ -39,6 +39,9 @@ export default function DeliveryDetailsPage({ params }: DeliveryDetailsProps) {
 
   const handleModalClose = () => setShowDeleteModal(false);
   const handleModalOpen = () => setShowDeleteModal(true);
+  const handleSave = () => {
+    router.push(`/delivery`);
+  };
 
   const renderDeliveryStatus = () => {
     if (!delivery) return null;
@@ -174,7 +177,7 @@ export default function DeliveryDetailsPage({ params }: DeliveryDetailsProps) {
         <ModalDelete
           isOpen={showDeleteModal}
           onClose={handleModalClose}
-          onSave={handleModalClose}
+          onSave={handleSave}
           id={delivery.id}
         />
       )}

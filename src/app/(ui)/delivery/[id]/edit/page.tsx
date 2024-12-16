@@ -14,7 +14,7 @@ import { getTrucks } from "@/services/truck";
 import { Truck } from "@/types/Truck";
 import { Driver } from "@/types/Driver";
 import { z } from "zod";
-import toast from "react-hot-toast";
+import { useToast } from "@/hooks/use-toast";
 import { inputDate } from "@/utils/stringUtils";
 import { Input } from "@/components/ui/input";
 import {
@@ -54,9 +54,7 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
   const [deliveryTime, setDeliveryTime] = useState<string>("");
   const [driversFetched, setDriversFetched] = useState(false);
   const [trucksFetched, setTrucksFetched] = useState(false);
-
-  const [apiError, setApiError] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const { toast } = useToast();
 
   const router = useRouter();
 
@@ -153,13 +151,22 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
       const response = await fetchUpdateDelivery(deliveryId, deliveryRequest);
 
       if (response) {
-        toast.success("Entrega atualizada com sucesso!");
+        toast({
+          title: "Ateção.",
+          description: "Entrega atualizada com sucesso!",
+          duration: 4000,
+        });
         setTimeout(() => {
           router.push(`/delivery/${delivery?.id}`);
         }, 2000);
       }
     } catch (error) {
-      toast.error(`${error}`, { duration: 6000 });
+      toast({
+        variant: "destructive",
+        title: "Ateção.",
+        description: `${error}`,
+        duration: 6000,
+      });
     }
   }
 

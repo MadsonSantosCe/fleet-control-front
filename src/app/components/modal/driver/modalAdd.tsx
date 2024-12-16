@@ -17,7 +17,7 @@ import { Button } from "@/components/ui/button";
 import { z } from "zod";
 import { Driver } from "@/types/Driver";
 import { createDriver } from "@/services/driver";
-import { toast } from "react-hot-toast";
+import { useToast } from "@/hooks/use-toast";
 
 const schema = z.object({
   nameField: z
@@ -38,7 +38,7 @@ export default function ModalAdd({ isOpen, onSave, onClose }: Props) {
   const [nameField, setNameField] = useState("");
   const [licenseField, setLicenseField] = useState("");
   const [errors, setErrors] = useState({ nameField: "", licenseField: "" });
-  const [apiError, setApierror] = useState(false);
+  const { toast } = useToast();
 
   const handleSave = async () => {
     const resultZod = schema.safeParse({ nameField, licenseField });
@@ -59,12 +59,17 @@ export default function ModalAdd({ isOpen, onSave, onClose }: Props) {
           license: licenseField,
         });
         setErrors({ nameField: "", licenseField: "" });
-
-        setTimeout(() => {
-          window.location.reload();
-        }, 1000);
+        toast({
+          title: "Atenção",
+          description: "Motorista criado com sucesso",
+          duration: 4000,
+        });
+        onSave();
       } catch (error: any) {
-        toast.error(`${error.message || "Erro ao criar motorista"}`, {
+        toast({
+          variant: "destructive",
+          title: "Ateção.",
+          description: `${error}`,
           duration: 4000,
         });
       }

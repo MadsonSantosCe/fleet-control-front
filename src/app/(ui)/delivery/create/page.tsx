@@ -13,7 +13,7 @@ import { getDrivers } from "@/services/driver";
 import { getTrucks } from "@/services/truck";
 import { Truck } from "@/types/Truck";
 import { Driver } from "@/types/Driver";
-import toast from "react-hot-toast";
+import { useToast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -43,10 +43,7 @@ export default function EditDelivery() {
   const [deliveryTime, setDeliveryTime] = useState<string>("");
   const [driversFetched, setDriversFetched] = useState(false);
   const [trucksFetched, setTrucksFetched] = useState(false);
-
-  const [apiError, setApiError] = useState(false);
-  const [loading, setLoading] = useState(false);
-
+  const { toast } = useToast();
   const router = useRouter();
 
   useEffect(() => {
@@ -117,13 +114,22 @@ export default function EditDelivery() {
       const response = await fetchCreateDelivery(deliveryRequest);
 
       if (response) {
-        toast.success("Entrega criada com sucesso!");
+        toast({
+          title: "Ateção.",
+          description: "Entrega criada com sucesso!",
+          duration: 4000,
+        });
         setTimeout(() => {
           router.push(`/delivery`);
         }, 2000);
       }
     } catch (error) {
-      toast.error(`${error}`, { duration: 6000 });
+      toast({
+        variant: "destructive",
+        title: "Ateção.",
+        description: `${error}`,
+        duration: 6000,
+      });
     }
   }
 
@@ -132,7 +138,6 @@ export default function EditDelivery() {
       const response = await createDelivery(deliveryRequest);
       return response;
     } catch (error) {
-      console.error("Erro ao fazer a requisição de criação:", error);
       throw error;
     }
   };

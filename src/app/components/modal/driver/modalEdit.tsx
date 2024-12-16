@@ -17,7 +17,7 @@ import { Button } from "@/components/ui/button";
 import { z } from "zod";
 import { Driver } from "@/types/Driver";
 import { getDriverById, updateDriver } from "@/services/driver";
-import { toast } from "react-hot-toast";
+import { useToast } from "@/hooks/use-toast";
 
 const schema = z.object({
   nameField: z
@@ -40,12 +40,12 @@ export default function ModalEdit({ isOpen, onSave, onClose, id }: Props) {
   const [licenseField, setLicenseField] = useState("");
   const [errors, setErrors] = useState({ nameField: "", licenseField: "" });
   const [loading, setLoading] = useState(false);
+  const { toast } = useToast();
 
   useEffect(() => {
     if (isOpen) {
       fetchGetDriverById(id);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, id]);
 
   const fetchGetDriverById = async (id: number) => {
@@ -56,10 +56,12 @@ export default function ModalEdit({ isOpen, onSave, onClose, id }: Props) {
         setLicenseField(driver.license);
       }
     } catch (error: any) {
-      toast.error(
-        error?.message || "Erro ao buscar os detalhes do motorista.",
-        { duration: 4000 }
-      );
+      toast({
+        variant: "destructive",
+        title: "Ateção.",
+        description: `${error?.message}`,
+        duration: 4000,
+      });
       onClose();
     }
   };
@@ -83,10 +85,17 @@ export default function ModalEdit({ isOpen, onSave, onClose, id }: Props) {
           license: licenseField,
         });
         setErrors({ nameField: "", licenseField: "" });
-        toast.success("Motorista atualizado com sucesso!", { duration: 4000 });
-        onSave(); // Atualiza a lista de motoristas no componente pai
+        toast({
+          title: "Ateção.",
+          description: "Motorista atualizado com sucesso!",
+          duration: 4000,
+        });
+        onSave();
       } catch (error: any) {
-        toast.error(`${error?.message || "Erro ao atualizar motorista"}`, {
+        toast({
+          variant: "destructive",
+          title: "Ateção.",
+          description: `${error}`,
           duration: 4000,
         });
       }
@@ -109,7 +118,7 @@ export default function ModalEdit({ isOpen, onSave, onClose, id }: Props) {
         </DialogHeader>
         <DialogDescription></DialogDescription>
         <div className="mt-4 space-y-4">
-        <div className="rounded-md border border-input border-gray-300 focus-visible:outline-none">
+          <div className="rounded-md border border-input border-gray-300 focus-visible:outline-none">
             <Input
               value={nameField}
               placeholder="Digite o nome do motorista"

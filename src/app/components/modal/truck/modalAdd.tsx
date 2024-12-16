@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import { z } from "zod";
 import { Truck } from "@/types/Truck";
 import { createTruck } from "@/services/truck";
-import { toast } from "react-hot-toast";
+import { useToast } from "@/hooks/use-toast";
 
 const schema = z.object({
   modelField: z
@@ -39,6 +39,7 @@ export default function ModalAdd({ isOpen, onSave, onClose }: Props) {
     modelField: "",
     licensePlatefield: "",
   });
+  const { toast } = useToast();
 
   const handleSave = async () => {
     const resultZod = schema.safeParse({ modelField, licensePlatefield });
@@ -59,10 +60,17 @@ export default function ModalAdd({ isOpen, onSave, onClose }: Props) {
           licensePlate: licensePlatefield,
         });
         setErrors({ modelField: "", licensePlatefield: "" });
-        toast.success("Veículo criado com sucesso!", { duration: 4000 });
+        toast({
+          title: "Atenção",
+          description: "Veículo criado som sucesso",
+          duration: 4000,
+        });
         onSave();
       } catch (error: any) {
-        toast.error(`${error?.message || "Erro ao criar veículo"}`, {
+        toast({
+          variant: "destructive",
+          title: "Ateção.",
+          description: `${error}`,
           duration: 4000,
         });
       }
@@ -88,8 +96,7 @@ export default function ModalAdd({ isOpen, onSave, onClose }: Props) {
               value={modelField}
               placeholder="Digite o nome do modelo"
               onChange={(e) => setModelField(e.target.value)}
-              aria-label="Modelo do veículo"           
-              
+              aria-label="Modelo do veículo"
             />
             {errors.modelField && (
               <p className="text-red-500 text-sm mt-1">{errors.modelField}</p>

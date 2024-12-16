@@ -11,10 +11,10 @@ import {
   DialogClose,
   DialogFooter,
   DialogDescription,
-} from "@/components/ui/dialog"; // Ajuste o caminho conforme a estrutura do seu projeto
-import { Button } from "@/components/ui/button"; // Importando Button do shadcn/ui
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 import { deleteTruck, getTruckById } from "@/services/truck";
-import { toast } from "react-hot-toast";
+import { useToast } from "@/hooks/use-toast";
 
 type Props = {
   isOpen: boolean;
@@ -27,12 +27,12 @@ export default function ModalDelete({ isOpen, onSave, onClose, id }: Props) {
   const [modelField, setModelField] = useState("");
   const [licensePlatefield, setLicensePlatefield] = useState("");
   const [loading, setLoading] = useState(false);
+  const { toast } = useToast();
 
   useEffect(() => {
     if (isOpen) {
       fetchGetTruckById(id);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, id]);
 
   const fetchGetTruckById = async (id: number) => {
@@ -43,7 +43,10 @@ export default function ModalDelete({ isOpen, onSave, onClose, id }: Props) {
         setLicensePlatefield(truck.licensePlate);
       }
     } catch (error: any) {
-      toast.error(error?.message || "Erro ao buscar os detalhes do caminhão.", {
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: `${error?.message}`,
         duration: 4000,
       });
       onClose();
@@ -53,11 +56,19 @@ export default function ModalDelete({ isOpen, onSave, onClose, id }: Props) {
   const handleDelete = async () => {
     try {
       await fetchDeleteTruck(id);
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
+      toast({
+        title: "Ateção.",
+        description: "Veículo deletado com sucesso!",
+        duration: 4000,
+      });
+      onSave();
     } catch (error: any) {
-      toast.error(`${error}`, { duration: 4000 });
+      toast({
+        variant: "destructive",
+        title: "Ateção.",
+        description: `${error}`,
+        duration: 4000,
+      });
     }
   };
 

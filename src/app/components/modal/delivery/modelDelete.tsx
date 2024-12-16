@@ -12,8 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { deleteDelivery, getDeliveryById } from "@/services/delivery";
-import { toast } from "react-hot-toast";
-import { redirect, useRouter } from "next/navigation";
+import { useToast } from "@/hooks/use-toast";
 
 type Props = {
   isOpen: boolean;
@@ -24,17 +23,24 @@ type Props = {
 
 export default function ModalDelete({ isOpen, onSave, onClose, id }: Props) {
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
+  const { toast } = useToast();
 
   const handleDelete = async () => {
     try {
       await fetchDeleteDelivery(id);
-
-      setTimeout(() => {
-        redirect("/delivery");
-      }, 2000);
+      toast({
+        title: "Ateção.",
+        description: "Entrega deletada com sucesso!",
+        duration: 4000,
+      });
+      onSave()
     } catch (error) {
-      toast.error(`Erro: ${error}`, { duration: 6000 });
+      toast({
+        variant: "destructive",
+        title: "Ateção.",
+        description: `${error}`,
+        duration: 4000,
+      });
     }
   };
 

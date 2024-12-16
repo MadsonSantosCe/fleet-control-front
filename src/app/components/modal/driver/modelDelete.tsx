@@ -20,7 +20,7 @@ import {
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { deleteDriver, getDriverById } from "@/services/driver";
-import { toast } from "react-hot-toast";
+import { useToast } from "@/hooks/use-toast";
 
 type Props = {
   isOpen: boolean;
@@ -33,6 +33,7 @@ export default function ModalDelete({ isOpen, onSave, onClose, id }: Props) {
   const [nameField, setNameField] = useState("");
   const [licenseField, setLicenseField] = useState("");
   const [loading, setLoading] = useState(false);
+  const { toast } = useToast();
 
   useEffect(() => {
     if (isOpen) {
@@ -48,10 +49,12 @@ export default function ModalDelete({ isOpen, onSave, onClose, id }: Props) {
         setLicenseField(driver.license);
       }
     } catch (error: any) {
-      toast.error(
-        error?.message || "Erro ao buscar os detalhes do motorista.",
-        { duration: 4000 }
-      );
+      toast({
+        variant: "destructive",
+        title: "Ateção.",
+        description: `${error?.message}`,
+        duration: 4000,
+      });
       onClose();
     }
   };
@@ -59,11 +62,19 @@ export default function ModalDelete({ isOpen, onSave, onClose, id }: Props) {
   const handleDelete = async () => {
     try {
       await fetchDeleteDriver(id);
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
+      toast({
+        title: "Ateção.",
+        description: "Motorista deletado com sucesso!",
+        duration: 4000,
+      });
+      onSave();
     } catch (error) {
-      toast.error(`${error}`, { duration: 4000 });
+      toast({
+        variant: "destructive",
+        title: "Ateção.",
+        description: `${error}`,
+        duration: 4000,
+      });
     }
   };
 
