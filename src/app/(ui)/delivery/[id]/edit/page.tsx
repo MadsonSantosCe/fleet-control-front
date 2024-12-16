@@ -1,7 +1,5 @@
 "use client";
 
-import { faCalendarAlt } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { FormEvent, useEffect, useState } from "react";
 import { getDeliveryById, updateDelivery } from "@/services/delivery";
 import {
@@ -17,7 +15,7 @@ import { Truck } from "@/types/Truck";
 import { Driver } from "@/types/Driver";
 import { z } from "zod";
 import toast from "react-hot-toast";
-import { formatDate, inputDate } from "@/utils/stringUtils";
+import { inputDate } from "@/utils/stringUtils";
 
 interface DeliveryDetailsProps {
   params: Promise<{ id: string }>;
@@ -211,6 +209,7 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
             <span className="font-medium w-2/3 text-left">
               <input
                 type="number"
+                min="0"
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
                 className="border-2 rounded-sm border-gray-200 p-2 w-full"
@@ -301,7 +300,7 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
                 className="border-2 rounded-sm border-gray-200 p-2 w-full"
                 required
               >
-                <option value="">Selecione um veículo</option>
+                <option value={truckId || ""}>{truckLicensePlate}</option>
                 {trucks &&
                   trucks.map((truck) => (
                     <option key={truck.id} value={truck.id}>
@@ -337,7 +336,7 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
                 className="border-2 rounded-sm border-gray-200 p-2 w-full"
                 required
               >
-                <option value="">Selecione um motorista</option>
+                <option value={driverId || ""}>{driverName}</option>
                 {drivers &&
                   drivers.map((driver) => (
                     <option key={driver.id} value={driver.id}>

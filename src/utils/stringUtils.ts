@@ -15,12 +15,3 @@ export function inputDate(dateInput: string | Date): string {
   const minutes = String(date.getMinutes()).padStart(2, "0");
   return `${year}-${month}-${day}T${hours}:${minutes}`;
 }
-
-export function removeCpfSpecialChars(cpf: string): string {
-  return cpf.replace(/[^\d]/g, "");
-}
-
-export function formatCpf(cpf: string | number): string {
-  const cpfString = cpf.toString().padStart(11, "0");
-  return cpfString.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
-}

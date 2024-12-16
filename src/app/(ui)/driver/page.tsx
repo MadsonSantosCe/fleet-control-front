@@ -8,7 +8,6 @@ import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
 import ModalAdd from "@/app/components/modal/driver/modalAdd";
 import ModalEdit from "@/app/components/modal/driver/modalEdit";
 import ModalDelete from "@/app/components/modal/driver/modelDelete";
-import { formatCpf } from "@/utils/stringUtils";
 import { Loader } from "@/app/components/ui/loader";
 
 export default function DriverPage() {
@@ -51,7 +50,7 @@ export default function DriverPage() {
         </button>
         <h3 className="text-sm font-semibold text-center">{driver.name}</h3>
         <p className="text-sm text-gray-500 text-center">
-          CPF: {formatCpf(driver.license)}
+          CNH: {driver.license}
         </p>
       </div>
 

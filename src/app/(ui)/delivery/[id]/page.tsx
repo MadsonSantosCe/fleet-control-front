@@ -1,7 +1,4 @@
 "use client";
-
-import { faCalendarAlt } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { getDeliveryById } from "@/services/delivery";
 import { Delivery } from "@/types/Delivery";

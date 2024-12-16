@@ -103,7 +103,7 @@ export default function ModalEdit({ onSave, onClose, id }: Props) {
           <div className="mb-4">
             <Input
               value={licenseField}
-              placeholder="Digite o CPF do colaborador"
+              placeholder="Digite a CNH do colaborador"
               onChange={(e) => setLicenseField(e.target.value)}
               errorMessage={errors.licenseField}
             />

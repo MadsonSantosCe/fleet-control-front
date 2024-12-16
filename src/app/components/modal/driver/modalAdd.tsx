@@ -7,7 +7,6 @@ import { z } from "zod";
 import { Driver } from "@/types/Driver";
 import { createDriver } from "@/services/driver";
 import { toast } from "react-hot-toast";
-import { removeCpfSpecialChars } from "@/utils/stringUtils";
 import { Input } from "@/app/components/ui/input";
 
 const schema = z.object({
@@ -42,13 +41,11 @@ export default function ModalAdd({ onSave, onClose }: Props) {
           : "",
       });
     } else {
-      const cpfLimpo = removeCpfSpecialChars(licenseField);
-
       try {
         const result = await fetchCreateDriver({
           id: 1,
           name: nameField,
-          license: cpfLimpo,
+          license: licenseField,
         });
         setErrors({ nameField: "", licenseField: "" });
 
@@ -91,7 +88,7 @@ export default function ModalAdd({ onSave, onClose }: Props) {
           <div className="mb-4">
             <Input
               value={licenseField}
-              placeholder="Digite o CPF do colaborador"
+              placeholder="Digite a CNH do colaborador"
               onChange={(e) => setLicenseField(e.target.value)}
               errorMessage={errors.licenseField}
             />

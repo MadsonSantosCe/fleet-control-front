@@ -170,6 +170,7 @@ export default function EditDelivery() {
             <span className="font-medium w-2/3 text-left">
               <input
                 type="number"
+                min="0"
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
                 className="border-2 rounded-sm border-gray-200 p-2 w-full"
@@ -245,7 +246,7 @@ export default function EditDelivery() {
                 className="border-2 rounded-sm border-gray-200 p-2 w-full"
                 required
               >
-                <option value="">Selecione um veículo</option>
+                <option value={truckId || ""}>{truckLicensePlate}</option>
                 {trucks &&
                   trucks.map((truck) => (
                     <option key={truck.id} value={truck.id}>
@@ -280,7 +281,7 @@ export default function EditDelivery() {
                 className="border-2 rounded-sm border-gray-200 p-2 w-full"
                 required
               >
-                <option value="">Selecione um motorista</option>
+                <option value={driverId || ""}>{driverName}</option>
                 {drivers &&
                   drivers.map((driver) => (
                     <option key={driver.id} value={driver.id}>

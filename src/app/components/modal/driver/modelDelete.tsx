@@ -39,7 +39,7 @@ export default function ModalDelete({ onSave, onClose, id }: Props) {
         window.location.reload();
       }, 1000);
     } catch (error) {
-      toast.error(`${error}`, { duration: 6000 });
+      toast.error(`${error}`, { duration: 4000 });
     }
   };
 
@@ -73,7 +73,7 @@ export default function ModalDelete({ onSave, onClose, id }: Props) {
             />
             <div>
               <h3 className="text-lg font-semibold">{nameField}</h3>
-              <p className="text-gray-600">Licença: {licenseField}</p>
+              <p className="text-gray-600">CNH: {licenseField}</p>
             </div>
           </div>
 
