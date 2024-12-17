@@ -108,8 +108,12 @@ export default function EditDelivery() {
   };
 
   useEffect(() => {
-    if (dangerous || valuable || (!dangerous && !valuable)) {
+    if (type === DeliveryType.Combustivel) {
       setInsurance(false);
+    }
+
+    if (type === DeliveryType.Eletronico) {
+      setDangerous(false);
     }
   }, [type]);
 
