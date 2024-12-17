@@ -7,7 +7,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { Loader } from "@/app/components/ui/loader";
 import { Button } from "@/components/ui/button";
-import { toast } from "react-hot-toast";
 import {
   Card,
   CardDescription,
@@ -19,6 +18,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import ModalAdd from "@/app/components/modal/driver/modalAdd";
 import ModalEdit from "@/app/components/modal/driver/modalEdit";
 import ModalDelete from "@/app/components/modal/driver/modelDelete";
+import { useToast } from "@/hooks/use-toast";
 
 export default function DriverPage() {
   const [popupType, setPopupType] = useState<null | "add" | "edit" | "delete">(
@@ -27,6 +27,7 @@ export default function DriverPage() {
   const [selectedDriverId, setSelectedDriverId] = useState<number | null>(null);
   const [drivers, setDrivers] = useState<Driver[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const { toast } = useToast();
 
   useEffect(() => {
     fetchDrivers();
@@ -38,11 +39,12 @@ export default function DriverPage() {
       const response = await getDrivers();
       setDrivers(response);
     } catch (error: any) {
-      toast.error(
-        error?.message ||
-          "Erro ao buscar os motoristas. Por favor, tente novamente.",
-        { duration: 4000 }
-      );
+      toast({
+        variant: "destructive",
+        title: "Ateção.",
+        description: "Erro ao buscar os motoristas.",
+        duration: 4000,
+      });
     } finally {
       setIsLoading(false);
     }

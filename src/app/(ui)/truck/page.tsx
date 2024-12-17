@@ -7,16 +7,17 @@ import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { Truck } from "@/types/Truck";
 import { Loader } from "@/app/components/ui/loader";
 import { Button } from "@/components/ui/button";
-import { toast } from "react-hot-toast";
 import ModalAdd from "@/app/components/modal/truck/modalAdd";
 import ModalEdit from "@/app/components/modal/truck/modalEdit";
 import ModalDelete from "@/app/components/modal/truck/modelDelete";
+import { useToast } from "@/hooks/use-toast";
 
 export default function TruckPage() {
   const [popupType, setPopupType] = useState<null | "add" | "edit" | "delete">(null);
   const [selectedTruckId, setSelectedTruckId] = useState<number | null>(null);
   const [trucks, setTrucks] = useState<Truck[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const { toast } = useToast();
 
   useEffect(() => {
     fetchTrucks();
@@ -28,10 +29,12 @@ export default function TruckPage() {
       const response = await getTrucks();
       setTrucks(response);
     } catch (error: any) {
-      toast.error(
-        error?.message || "Erro ao buscar os caminhões. Por favor, tente novamente.",
-        { duration: 4000 }
-      );
+      toast({
+        variant: "destructive",
+        title: "Ateção.",
+        description: "Erro ao buscar os caminhões.",
+        duration: 4000,
+      });
     } finally {
       setIsLoading(false);
     }

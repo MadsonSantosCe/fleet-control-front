@@ -31,7 +31,7 @@ interface DeliveryDetailsProps {
 }
 
 const schema = z.object({
-  value: z.number().positive().int(),
+  value: z.number().positive({ message: "O valor não pode ser negativo" }).int(),
 });
 
 export default function EditDelivery({ params }: DeliveryDetailsProps) {
@@ -55,6 +55,10 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
   const [driversFetched, setDriversFetched] = useState(false);
   const [trucksFetched, setTrucksFetched] = useState(false);
   const { toast } = useToast();
+
+  const [errors, setErrors] = useState({
+    value: "",
+  });
 
   const router = useRouter();
 
@@ -136,6 +140,19 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
 
   async function handleSubmit(): Promise<void> {
     try {
+      const resultZod = schema.safeParse({
+        value: value ? parseFloat(value) : 0,
+      });
+
+      if (!resultZod.success) {
+        const fieldErrors = resultZod.error.flatten().fieldErrors;
+
+        setErrors({
+          value: fieldErrors.value?.[0] ?? "",
+        });
+        return;
+      }
+
       const deliveryRequest: DeliveryRequest = {
         value: parseFloat(value),
         destination: destination as Destinations,
@@ -215,8 +232,9 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
                 <input
                   type="datetime-local"
                   value={formattedDate}
+                  min={inputDate(new Date())}
                   onChange={(e) => setDeliveryTime(e.target.value)}
-                  className="text-sm border-2 rounded-sm border-gray-200 p-2 w-full"
+                  className="text-sm border-2 rounded-sm text-gray-700 border-gray-200 p-2 w-full"
                   required
                 />
               </div>
@@ -230,10 +248,16 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
                 type="number"
                 min="0"
                 value={value}
-                onChange={(e) => setValue(e.target.value)}
-                className="border-2 rounded-sm border-gray-200 p-2 w-full"
+                onChange={(e) => {
+                  setValue(e.target.value);
+                  setErrors((prevErrors) => ({ ...prevErrors, value: "" }));
+                }}
+                className="border-2 rounded-sm border-gray-200 text-gray-700 p-2 w-full"
                 required
               />
+              {errors.value && (
+                <p className="text-red-500 text-sm mt-1">{errors.value}</p>
+              )}
             </span>
           </div>
 
@@ -244,7 +268,7 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
                 value={destination}
                 onValueChange={(value) => setDestination(value as Destinations)}
               >
-                <SelectTrigger className="w-full border-2 border-gray-200 rounded-sm p-2">
+                <SelectTrigger className="w-full border-2 border-gray-200 text-gray-700 rounded-sm p-2">
                   <SelectValue placeholder="Selecione um destino" />
                 </SelectTrigger>
                 <SelectContent>
@@ -265,7 +289,7 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
                 value={type}
                 onValueChange={(value) => setType(value as DeliveryType)}
               >
-                <SelectTrigger className="w-full border-2 border-gray-200 rounded-sm p-2">
+                <SelectTrigger className="w-full border-2 border-gray-200 text-gray-700 rounded-sm p-2">
                   <SelectValue placeholder="Selecione um tipo entrega" />
                 </SelectTrigger>
                 <SelectContent>
@@ -320,7 +344,7 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
                   value={truckId?.toString()}
                   onValueChange={handleTruckChange}
                 >
-                  <SelectTrigger className="w-full border-2 rounded-sm border-gray-200 p-2">
+                  <SelectTrigger className="w-full border-2 rounded-sm border-gray-200 text-gray-700 p-2">
                     <SelectValue>
                       {truckId ? truckLicensePlate : "Selecione um caminhão"}
                     </SelectValue>
@@ -341,11 +365,11 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
           <div className="flex items-center justify-between my-4">
             <span className="text-gray-600 w-1/3">Modelo</span>
             <span className="font-medium w-2/3 text-left">
-              <input
+              <Input
                 type="text"
                 value={truckModel}
                 readOnly
-                className="border-2 rounded-sm border-gray-200 p-2 w-full bg-gray-100"
+                className="border-2 rounded-sm border-gray-200 text-gray-700 p-2 w-full bg-gray-100"
               />
             </span>
           </div>
@@ -361,7 +385,7 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
                   value={driverId?.toString()}
                   onValueChange={handleDriverChange}
                 >
-                  <SelectTrigger className="w-full border-2 rounded-sm border-gray-200 p-2">
+                  <SelectTrigger className="w-full border-2 rounded-sm border-gray-200 text-gray-700 p-2">
                     <SelectValue>
                       {driverId ? driverName : "Selecione um caminhão"}
                     </SelectValue>
@@ -389,7 +413,7 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
                 type="text"
                 value={driverLicense}
                 readOnly
-                className="border-2 rounded-sm border-gray-200 p-2 w-full bg-gray-100"
+                className="border-2 rounded-sm border-gray-200 p-2 w-full bg-gray-100 text-gray-700"
               />
             </span>
           </div>

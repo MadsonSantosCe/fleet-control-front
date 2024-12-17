@@ -6,8 +6,8 @@ import Link from "next/link";
 import { formatDate } from "@/utils/stringUtils";
 import ModalDelete from "@/app/components/modal/delivery/modelDelete";
 import { Loader } from "@/app/components/ui/loader";
-import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/hooks/use-toast";
 
 interface DeliveryDetailsProps {
   params: Promise<{ id: string }>;
@@ -18,6 +18,7 @@ export default function DeliveryDetailsPage({ params }: DeliveryDetailsProps) {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
+  const { toast } = useToast();
 
   useEffect(() => {
     fetchDeliveryDetails();
@@ -31,7 +32,12 @@ export default function DeliveryDetailsPage({ params }: DeliveryDetailsProps) {
         setDelivery(deliveryData);
       }
     } catch (error) {
-      toast.error(`Erro ao buscar detalhes: ${error}`, { duration: 6000 });
+      toast({
+        variant: "destructive",
+        title: "Ateção.",
+        description: "Erro ao buscar detalhes das entregas",
+        duration: 4000,
+      });
     } finally {
       setIsLoading(false);
     }

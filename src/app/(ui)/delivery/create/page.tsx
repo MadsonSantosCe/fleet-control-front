@@ -23,9 +23,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
+import { inputDate } from "@/utils/stringUtils";
+import { DliverySchema } from "@/schemas/deliverySchema";
 
 export default function EditDelivery() {
-  const [delivery, setDelivery] = useState<Delivery | null>(null);
   const [trucks, setTrucks] = useState<Truck[] | null>([]);
   const [drivers, setDrivers] = useState<Driver[] | null>([]);
   const [value, setValue] = useState("");
@@ -40,11 +41,22 @@ export default function EditDelivery() {
   const [driverId, setDriverId] = useState<number | null>(null);
   const [driverName, setDriverName] = useState("");
   const [driverLicense, setDriverLicense] = useState("");
-  const [deliveryTime, setDeliveryTime] = useState<string>("");
+  const [deliveryTime, setDeliveryTime] = useState<string>(
+    inputDate(new Date())
+  );
   const [driversFetched, setDriversFetched] = useState(false);
   const [trucksFetched, setTrucksFetched] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
+
+  const [errors, setErrors] = useState({
+    value: "",
+    deliveryTime: "",
+    destination: "",
+    type: "",
+    truckId: "",
+    driverId: "",
+  });
 
   useEffect(() => {
     fetchDrivers();
@@ -67,7 +79,7 @@ export default function EditDelivery() {
     }
   };
 
-  const handleDetails = () => {
+  const handleDelivery = () => {
     router.push(`/delivery`);
   };
 
@@ -99,6 +111,29 @@ export default function EditDelivery() {
 
   async function handleSubmit(): Promise<void> {
     try {
+      const resultZod = DliverySchema.safeParse({
+        value: value ? parseFloat(value) : 0,
+        deliveryTime: new Date(deliveryTime),
+        destination: destination as Destinations,
+        type: type as DeliveryType,
+        truckId: truckId ? (truckId as number) : 0,
+        driverId: driverId ? (driverId as number) : 0,
+      });
+
+      if (!resultZod.success) {
+        const fieldErrors = resultZod.error.flatten().fieldErrors;
+
+        setErrors({
+          value: fieldErrors.value?.[0] ?? "",
+          deliveryTime: fieldErrors.deliveryTime?.[0] ?? "",
+          destination: fieldErrors.destination?.[0] ?? "",
+          type: fieldErrors.type?.[0] ?? "",
+          truckId: fieldErrors.truckId?.[0] ?? "",
+          driverId: fieldErrors.driverId?.[0] ?? "",
+        });
+        return;
+      }
+
       const deliveryRequest: DeliveryRequest = {
         value: parseFloat(value),
         destination: destination as Destinations,
@@ -119,9 +154,8 @@ export default function EditDelivery() {
           description: "Entrega criada com sucesso!",
           duration: 4000,
         });
-        setTimeout(() => {
-          router.push(`/delivery`);
-        }, 2000);
+
+        handleDelivery()
       }
     } catch (error) {
       toast({
@@ -148,7 +182,7 @@ export default function EditDelivery() {
         <h1 className="text-2xl font-semibold">Entrega</h1>
         <div className="flex space-x-4">
           <button
-            onClick={handleDetails}
+            onClick={handleDelivery}
             className="px-2 py-2 border border-gray-300 text-sm rounded-lg hover:bg-gray-100"
           >
             Cancelar
@@ -163,7 +197,7 @@ export default function EditDelivery() {
         </div>
       </div>
 
-      <h2 className="text-lg font-semibold mt-10">Detalhes</h2>
+      <h2 className="text-lg font-semibold mt-6">Detalhes</h2>
       <form>
         <div className="border-t border-gray-200 py-4">
           <div className="flex items-center justify-between my-4">
@@ -173,10 +207,22 @@ export default function EditDelivery() {
                 <input
                   type="datetime-local"
                   value={deliveryTime.toLocaleString()}
-                  onChange={(e) => setDeliveryTime(e.target.value)}
-                  className="text-sm border-2 rounded-sm border-gray-200 p-2 w-full"
+                  min={inputDate(new Date())}
+                  onChange={(e) => {
+                    setDeliveryTime(e.target.value);
+                    setErrors((prevErrors) => ({
+                      ...prevErrors,
+                      deliveryTime: "",
+                    }));
+                  }}
+                  className="text-sm border-2 text-gray-700 rounded-sm border-gray-200 p-2 w-full"
                   required
                 />
+                {errors.deliveryTime && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.deliveryTime}
+                  </p>
+                )}
               </div>
             </span>
           </div>
@@ -188,10 +234,17 @@ export default function EditDelivery() {
                 type="number"
                 min="0"
                 value={value}
-                onChange={(e) => setValue(e.target.value)}
-                className="border-2 rounded-sm border-gray-200 p-2 w-full"
+                placeholder="0"
+                onChange={(e) => {
+                  setValue(e.target.value);
+                  setErrors((prevErrors) => ({ ...prevErrors, value: "" }));
+                }}
+                className="border-2 rounded-sm text-gray-700 border-gray-200 p-2 w-full"
                 required
               />
+              {errors.value && (
+                <p className="text-red-500 text-sm mt-1">{errors.value}</p>
+              )}
             </span>
           </div>
 
@@ -200,9 +253,15 @@ export default function EditDelivery() {
             <span className="font-medium w-2/3 text-left">
               <Select
                 value={destination}
-                onValueChange={(value) => setDestination(value as Destinations)}
+                onValueChange={(value) => {
+                  setDestination(value as Destinations);
+                  setErrors((prevErrors) => ({
+                    ...prevErrors,
+                    destination: "",
+                  }));
+                }}
               >
-                <SelectTrigger className="w-full border-2 border-gray-200 rounded-sm p-2">
+                <SelectTrigger className="w-full border-2 text-gray-700 border-gray-200 rounded-sm p-2">
                   <SelectValue placeholder="Selecione um destino" />
                 </SelectTrigger>
                 <SelectContent>
@@ -213,6 +272,11 @@ export default function EditDelivery() {
                   ))}
                 </SelectContent>
               </Select>
+              {errors.destination && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.destination}
+                </p>
+              )}
             </span>
           </div>
 
@@ -221,9 +285,12 @@ export default function EditDelivery() {
             <span className="font-medium w-2/3 text-left">
               <Select
                 value={type}
-                onValueChange={(value) => setType(value as DeliveryType)}
+                onValueChange={(value) => {
+                  setType(value as DeliveryType);
+                  setErrors((prevErrors) => ({ ...prevErrors, type: "" }));
+                }}
               >
-                <SelectTrigger className="w-full border-2 border-gray-200 rounded-sm p-2">
+                <SelectTrigger className="w-full border-2 text-gray-700 border-gray-200 rounded-sm p-2">
                   <SelectValue placeholder="Selecione um tipo entrega" />
                 </SelectTrigger>
                 <SelectContent>
@@ -234,6 +301,9 @@ export default function EditDelivery() {
                   ))}
                 </SelectContent>
               </Select>
+              {errors.type && (
+                <p className="text-red-500 text-sm mt-1">{errors.type}</p>
+              )}
             </span>
           </div>
 
@@ -261,9 +331,12 @@ export default function EditDelivery() {
             <span className="font-medium w-2/3 text-left">
               <Select
                 value={truckId?.toString()}
-                onValueChange={handleTruckChange}
+                onValueChange={(value) => {
+                  handleTruckChange(value);
+                  setErrors((prevErrors) => ({ ...prevErrors, truckId: "" }));
+                }}
               >
-                <SelectTrigger className="w-full border-2 border-gray-200 rounded-sm p-2">
+                <SelectTrigger className="w-full border-2 text-gray-700 border-gray-200 rounded-sm p-2">
                   <SelectValue placeholder="Escolha um veículo" />
                 </SelectTrigger>
                 <SelectContent>
@@ -275,6 +348,9 @@ export default function EditDelivery() {
                     ))}
                 </SelectContent>
               </Select>
+              {errors.truckId && (
+                <p className="text-red-500 text-sm mt-1">{errors.truckId}</p>
+              )}
             </span>
           </div>
 
@@ -285,23 +361,26 @@ export default function EditDelivery() {
                 type="text"
                 value={truckModel}
                 readOnly
-                className="border-2 rounded-sm border-gray-200 p-2 w-full bg-gray-100"
+                className="border-2 rounded-sm border-gray-200 p-2 text-gray-700 w-full bg-gray-100"
               />
             </span>
           </div>
         </div>
 
-        <h2 className="text-lg font-semibold mt-4">Motorista</h2>
+        <h2 className="text-lg font-semibold mt-2">Motorista</h2>
         <div className="border-t border-gray-200 py-4">
           <div className="flex items-center justify-between my-4">
             <span className="text-gray-600 w-1/3">Nome</span>
             <span className="font-medium w-2/3 text-left">
               <Select
                 value={driverId?.toString()}
-                onValueChange={handleDriverChange}
+                onValueChange={(value) => {
+                  handleDriverChange(value);
+                  setErrors((prevErrors) => ({ ...prevErrors, driverId: "" }));
+                }}
               >
-                <SelectTrigger className="w-full border-2 border-gray-200 rounded-sm p-2">
-                  <SelectValue placeholder="Escolha um veículo" />
+                <SelectTrigger className="w-full border-2 text-gray-700 border-gray-200 rounded-sm p-2">
+                  <SelectValue placeholder="Escolha um notorista" />
                 </SelectTrigger>
                 <SelectContent>
                   {drivers &&
@@ -312,11 +391,14 @@ export default function EditDelivery() {
                     ))}
                 </SelectContent>
               </Select>
+              {errors.driverId && (
+                <p className="text-red-500 text-sm mt-1">{errors.driverId}</p>
+              )}
             </span>
           </div>
 
           <div className="flex items-center justify-between my-4">
-            <span className="text-gray-600 w-1/3">CPF</span>
+            <span className="text-gray-600 w-1/3">CNH</span>
             <span className="font-medium w-2/3 text-left">
               <Input
                 type="text"
