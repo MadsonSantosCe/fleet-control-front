@@ -26,7 +26,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { inputDate } from "@/utils/stringUtils";
 import { DliverySchema } from "@/schemas/deliverySchema";
 
-export default function EditDelivery() {
+export default function CreateDelivery() {
   const [trucks, setTrucks] = useState<Truck[] | null>([]);
   const [drivers, setDrivers] = useState<Driver[] | null>([]);
   const [value, setValue] = useState("");
@@ -119,7 +119,7 @@ export default function EditDelivery() {
 
   const dataFormatada = new Date(deliveryTime);
 
-  async function handleSubmit(): Promise<void> {
+  const handleSubmit = async (): Promise<void> => {
     try {
       const resultZod = DliverySchema.safeParse({
         value: value ? parseFloat(value) : 0,

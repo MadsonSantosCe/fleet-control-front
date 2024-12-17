@@ -151,7 +151,7 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
 
   if (!delivery) return <p></p>;
 
-  async function handleSubmit(): Promise<void> {
+  const handleSubmit = async (): Promise<void> => {
     try {
       const resultZod = schema.safeParse({
         value: value ? parseFloat(value) : 0,
@@ -184,7 +184,7 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
         toast({
           variant: "success",
           title: "Aviso",
-          description: "Entrega atualizado com sucesso",
+          description: "Entrega atualizada com sucesso",
           duration: 4000,
         });
 
@@ -402,7 +402,7 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
                 >
                   <SelectTrigger className="w-full border-2 rounded-sm border-gray-200 text-gray-700 p-2">
                     <SelectValue>
-                      {driverId ? driverName : "Selecione um caminhão"}
+                      {driverId ? driverName : "Selecione um motorista"}
                     </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
