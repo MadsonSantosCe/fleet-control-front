@@ -84,12 +84,15 @@ export default function ModalEdit({ isOpen, onSave, onClose, id }: Props) {
           name: nameField,
           license: licenseField,
         });
+        
         setErrors({ nameField: "", licenseField: "" });
         toast({
-          title: "Ateção.",
+          variant: "success",
+          title: "Aviso",
           description: "Motorista atualizado com sucesso!",
           duration: 4000,
         });
+
         onSave();
       } catch (error: any) {
         toast({

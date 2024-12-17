@@ -60,7 +60,8 @@ export default function ModalAdd({ isOpen, onSave, onClose }: Props) {
         });
         setErrors({ nameField: "", licenseField: "" });
         toast({
-          title: "Atenção",
+          variant: "success",
+          title: "Aviso",
           description: "Motorista criado com sucesso",
           duration: 4000,
         });

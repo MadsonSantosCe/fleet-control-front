@@ -45,6 +45,7 @@ export default function DriverPage() {
         description: "Erro ao buscar os motoristas.",
         duration: 4000,
       });
+      
     } finally {
       setIsLoading(false);
     }

@@ -169,10 +169,12 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
 
       if (response) {
         toast({
-          title: "Ateção.",
-          description: "Entrega atualizada com sucesso!",
+          variant: "success",
+          title: "Aviso",
+          description: "Entrega atualizado com sucesso",
           duration: 4000,
         });
+        
         setTimeout(() => {
           router.push(`/delivery/${delivery?.id}`);
         }, 2000);

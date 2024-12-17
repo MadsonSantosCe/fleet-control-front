@@ -35,6 +35,7 @@ export default function TruckPage() {
         description: "Erro ao buscar os caminhões.",
         duration: 4000,
       });
+      
     } finally {
       setIsLoading(false);
     }

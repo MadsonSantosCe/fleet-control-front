@@ -60,11 +60,14 @@ export default function ModalAdd({ isOpen, onSave, onClose }: Props) {
           licensePlate: licensePlatefield,
         });
         setErrors({ modelField: "", licensePlatefield: "" });
+
         toast({
-          title: "Atenção",
-          description: "Veículo criado som sucesso",
+          variant: "success",
+          title: "Aviso",
+          description: "Veículo criado com sucesso",
           duration: 4000,
         });
+        
         onSave();
       } catch (error: any) {
         toast({

@@ -88,13 +88,15 @@ export default function ModalEdit({ isOpen, onSave, onClose, id }: Props) {
           model: modelField,
           licensePlate: licensePlatefield,
         });
-        setErrors({ modelField: "", licensePlatefield: "" });
-        setApiError(false);
+        setErrors({ modelField: "", licensePlatefield: "" });              
+
         toast({
-          title: "Ateção.",
+          variant: "success",
+          title: "Aviso",
           description: "Veículo atualizado com sucesso!",
           duration: 4000,
         });
+
         onSave();
       } catch (error) {
         toast({

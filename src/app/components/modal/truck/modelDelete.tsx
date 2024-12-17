@@ -57,10 +57,12 @@ export default function ModalDelete({ isOpen, onSave, onClose, id }: Props) {
     try {
       await fetchDeleteTruck(id);
       toast({
-        title: "Ateção.",
+        variant: "success",
+        title: "Aviso",
         description: "Veículo deletado com sucesso!",
         duration: 4000,
       });
+      
       onSave();
     } catch (error: any) {
       toast({

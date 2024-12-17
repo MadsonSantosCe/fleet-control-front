@@ -150,8 +150,9 @@ export default function EditDelivery() {
 
       if (response) {
         toast({
-          title: "Ateção.",
-          description: "Entrega criada com sucesso!",
+          variant: "success",
+          title: "Aviso",
+          description: "Entrega criada com sucesso",
           duration: 4000,
         });
 

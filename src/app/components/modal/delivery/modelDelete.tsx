@@ -28,11 +28,14 @@ export default function ModalDelete({ isOpen, onSave, onClose, id }: Props) {
   const handleDelete = async () => {
     try {
       await fetchDeleteDelivery(id);
+      
       toast({
-        title: "Ateção.",
+        variant: "success",
+        title: "Aviso",
         description: "Entrega deletada com sucesso!",
         duration: 4000,
       });
+      
       onSave()
     } catch (error) {
       toast({
