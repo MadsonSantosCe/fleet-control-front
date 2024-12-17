@@ -31,7 +31,10 @@ interface DeliveryDetailsProps {
 }
 
 const schema = z.object({
-  value: z.number().positive({ message: "O valor não pode ser negativo" }).int(),
+  value: z
+    .number()
+    .positive({ message: "O valor não pode ser negativo" })
+    .int(),
 });
 
 export default function EditDelivery({ params }: DeliveryDetailsProps) {
@@ -136,6 +139,12 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
     }
   };
 
+  useEffect(() => {
+    if (dangerous || valuable || (!dangerous && !valuable)) {
+      setInsurance(false);
+    }
+  }, [type]);
+
   if (!delivery) return <p></p>;
 
   async function handleSubmit(): Promise<void> {
@@ -174,7 +183,7 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
           description: "Entrega atualizado com sucesso",
           duration: 4000,
         });
-        
+
         setTimeout(() => {
           router.push(`/delivery/${delivery?.id}`);
         }, 2000);
@@ -307,7 +316,7 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
 
           <div className="flex items-center justify-between mt-6">
             <span className="text-gray-600 w-1/3">Status</span>
-            <span className="font-medium w-2/3 text-left">
+            <span className="font-medium w-2/3 text-left flex items-center space-x-2">
               {type === DeliveryType.Eletronico && (
                 <label className="flex items-center text-green-600 font-semibold">
                   <Checkbox

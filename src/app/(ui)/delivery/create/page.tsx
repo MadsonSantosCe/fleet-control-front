@@ -107,6 +107,12 @@ export default function EditDelivery() {
     }
   };
 
+  useEffect(() => {
+    if (dangerous || valuable || (!dangerous && !valuable)) {
+      setInsurance(false);
+    }
+  }, [type]);
+
   const dataFormatada = new Date(deliveryTime);
 
   async function handleSubmit(): Promise<void> {
@@ -156,7 +162,7 @@ export default function EditDelivery() {
           duration: 4000,
         });
 
-        handleDelivery()
+        handleDelivery();
       }
     } catch (error) {
       toast({
