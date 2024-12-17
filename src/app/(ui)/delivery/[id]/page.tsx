@@ -74,13 +74,13 @@ export default function DeliveryDetailsPage({ params }: DeliveryDetailsProps) {
     <div className="border-t border-gray-200 py-8">
       <div className="flex items-center justify-between my-4">
         <span className="text-gray-600 w-1/3">Placa</span>
-        <span className="font-medium w-2/3 text-left">
+        <span className="font-medium w-2/3 text-left text-gray-700">
           {delivery?.truck.licensePlate}
         </span>
       </div>
       <div className="flex items-center justify-between my-4">
         <span className="text-gray-600 w-1/3">Modelo</span>
-        <span className="font-medium w-2/3 text-left">
+        <span className="font-medium w-2/3 text-left text-gray-700">
           {delivery?.truck.model}
         </span>
       </div>
@@ -91,13 +91,13 @@ export default function DeliveryDetailsPage({ params }: DeliveryDetailsProps) {
     <div className="border-t border-gray-200 py-6">
       <div className="flex items-center justify-between my-4">
         <span className="text-gray-600 w-1/3">Nome</span>
-        <span className="font-medium w-2/3 text-left">
+        <span className="font-medium w-2/3 text-left text-gray-700">
           {delivery?.driver.name}
         </span>
       </div>
       <div className="flex items-center justify-between my-4">
         <span className="text-gray-600 w-1/3">CNH</span>
-        <span className="font-medium w-2/3 text-left">
+        <span className="font-medium w-2/3 text-left text-gray-700">
           {delivery?.driver.license}
         </span>
       </div>
@@ -143,31 +143,31 @@ export default function DeliveryDetailsPage({ params }: DeliveryDetailsProps) {
       <div className="border-t border-gray-200 py-6">
         <div className="flex items-center justify-between my-4">
           <span className="text-gray-600 w-1/3">Data</span>
-          <span className="font-medium w-2/3 text-left">{formattedDate}</span>
+          <span className="font-medium w-2/3 text-left text-gray-700">{formattedDate}</span>
         </div>
 
         <div className="flex items-center justify-between my-4">
           <span className="text-gray-600 w-1/3">Valor</span>
-          <span className="font-medium w-2/3 text-left">
+          <span className="font-medium w-2/3 text-left text-gray-700">
             R$ {delivery.value.toLocaleString()}
           </span>
         </div>
 
         <div className="flex items-center justify-between my-4">
           <span className="text-gray-600 w-1/3">Destino</span>
-          <span className="font-medium w-2/3 text-left">
+          <span className="font-medium w-2/3 text-left text-gray-700">
             {delivery.destination}
           </span>
         </div>
 
         <div className="flex items-center justify-between my-4">
           <span className="text-gray-600 w-1/3">Tipo</span>
-          <span className="font-medium w-2/3 text-left">{delivery.type}</span>
+          <span className="font-medium w-2/3 text-left text-gray-700">{delivery.type}</span>
         </div>
 
         <div className="flex items-center justify-between mt-4">
           <span className="text-gray-600 w-1/3">Status</span>
-          <span className="font-medium w-2/3 text-left">
+          <span className="font-medium w-2/3 text-left text-gray-700">
             {renderDeliveryStatus()}
           </span>
         </div>

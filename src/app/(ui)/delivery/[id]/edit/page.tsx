@@ -25,6 +25,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
+import CurrencyInput from "react-currency-input-field";
 
 interface DeliveryDetailsProps {
   params: Promise<{ id: string }>;
@@ -200,7 +201,7 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
         duration: 6000,
       });
     }
-  }
+  };
 
   const fetchUpdateDelivery = async (
     id: number,
@@ -259,16 +260,15 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
           <div className="flex items-center justify-between my-4">
             <span className="block text-gray-700">Valor</span>
             <span className="font-medium w-2/3 text-left">
-              <Input
-                type="number"
-                min="0"
+              <CurrencyInput
                 value={value}
-                onChange={(e) => {
-                  setValue(e.target.value);
+                onValueChange={(val) => {
+                  setValue(val ?? "");
                   setErrors((prevErrors) => ({ ...prevErrors, value: "" }));
                 }}
-                className="border-2 rounded-sm border-gray-200 text-gray-700 p-2 w-full"
-                required
+                intlConfig={{ locale: "pt-BR", currency: "BRL" }}
+                className="!w-full p-2 border-2 rounded-sm text-gray-700 border-gray-200 text-sm"
+                placeholder="R$ 0.00"
               />
               {errors.value && (
                 <p className="text-red-500 text-sm mt-1">{errors.value}</p>

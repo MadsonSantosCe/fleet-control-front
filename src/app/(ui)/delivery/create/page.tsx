@@ -25,6 +25,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { inputDate } from "@/utils/stringUtils";
 import { DliverySchema } from "@/schemas/deliverySchema";
+import CurrencyInput from "react-currency-input-field";
 
 export default function CreateDelivery() {
   const [trucks, setTrucks] = useState<Truck[] | null>([]);
@@ -176,7 +177,7 @@ export default function CreateDelivery() {
         duration: 6000,
       });
     }
-  }
+  };
 
   const fetchCreateDelivery = async (deliveryRequest: DeliveryRequest) => {
     try {
@@ -241,17 +242,15 @@ export default function CreateDelivery() {
           <div className="flex items-center justify-between my-4">
             <span className="block text-gray-700">Valor</span>
             <span className="font-medium w-2/3 text-left">
-              <Input
-                type="number"
-                min="0"
+              <CurrencyInput
                 value={value}
-                placeholder="0"
-                onChange={(e) => {
-                  setValue(e.target.value);
+                onValueChange={(val) => {
+                  setValue(val ?? "");
                   setErrors((prevErrors) => ({ ...prevErrors, value: "" }));
                 }}
-                className="border-2 rounded-sm text-gray-700 border-gray-200 p-2 w-full"
-                required
+                intlConfig={{ locale: "pt-BR", currency: "BRL" }}
+                className="!w-full p-2 border-2 rounded-sm text-gray-700 border-gray-200 text-sm"
+                placeholder="R$ 0.00"
               />
               {errors.value && (
                 <p className="text-red-500 text-sm mt-1">{errors.value}</p>
