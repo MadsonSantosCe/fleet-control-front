@@ -154,6 +154,11 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
     if (type === DeliveryType.Eletronico) {
       setDangerous(false);
     }
+
+    if (type === DeliveryType.Quimico) {
+      setInsurance(false);
+      setDangerous(false);
+    }
   }, [type]);
 
   if (!delivery) return <p>Carregando...</p>;
