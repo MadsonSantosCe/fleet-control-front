@@ -9,18 +9,12 @@ import { getTrucks } from "@/services/truck";
 import { Truck } from "@/types/Truck";
 import { Driver } from "@/types/Driver";
 import { useToast } from "@/hooks/use-toast";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { inputDate } from "@/utils/stringUtils";
 import { DliverySchema } from "@/schemas/deliverySchema";
 import CurrencyInput from "react-currency-input-field";
+import InputField from "@/app/components/forms/InputField";
+import SelectField from "@/app/components/forms/SelectField";
 
 export default function CreateDelivery() {
   const [trucks, setTrucks] = useState<Truck[] | null>([]);
@@ -167,7 +161,7 @@ export default function CreateDelivery() {
     } catch (error) {
       toast({
         variant: "destructive",
-        title: "Ateção.",
+        title: "Atenção.",
         description: `${error}`,
         duration: 6000,
       });
@@ -215,21 +209,10 @@ export default function CreateDelivery() {
                   type="datetime-local"
                   value={deliveryTime.toLocaleString()}
                   min={inputDate(new Date())}
-                  onChange={(e) => {
-                    setDeliveryTime(e.target.value);
-                    setErrors((prevErrors) => ({
-                      ...prevErrors,
-                      deliveryTime: "",
-                    }));
-                  }}
-                  className="text-sm border-2 text-gray-700 rounded-sm border-gray-200 p-2 w-full"
+                  onChange={(e) => setDeliveryTime(e.target.value)}
+                  className="text-sm border-2 rounded-sm text-gray-700 border-gray-200 p-2 w-full"
                   required
                 />
-                {errors.deliveryTime && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.deliveryTime}
-                  </p>
-                )}
               </div>
             </span>
           </div>
@@ -253,64 +236,38 @@ export default function CreateDelivery() {
             </span>
           </div>
 
-          <div className="flex items-center justify-between my-4">
-            <span className="text-gray-600 w-1/3">Destino</span>
-            <span className="font-medium w-2/3 text-left">
-              <Select
-                value={destination}
-                onValueChange={(value) => {
-                  setDestination(value as Destinations);
-                  setErrors((prevErrors) => ({
-                    ...prevErrors,
-                    destination: "",
-                  }));
-                }}
-              >
-                <SelectTrigger className="w-full border-2 text-gray-700 border-gray-200 rounded-sm p-2">
-                  <SelectValue placeholder="Selecione um destino" />
-                </SelectTrigger>
-                <SelectContent>
-                  {Object.values(Destinations).map((dest) => (
-                    <SelectItem key={dest} value={dest}>
-                      {dest}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {errors.destination && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.destination}
-                </p>
-              )}
-            </span>
-          </div>
+          <SelectField
+            label="Destino"
+            value={destination}
+            onChange={(value) => {
+              setDestination(value as Destinations);
+              setErrors((prevErrors) => ({
+                ...prevErrors,
+                destination: "",
+              }));
+            }}
+            options={Object.values(Destinations).map((dest) => ({
+              label: dest,
+              value: dest,
+            }))}
+            placeholder="Selecione um destino"
+            error={errors.destination}
+          />
 
-          <div className="flex items-center justify-between my-4">
-            <span className="text-gray-600 w-1/3">Tipo</span>
-            <span className="font-medium w-2/3 text-left">
-              <Select
-                value={type}
-                onValueChange={(value) => {
-                  setType(value as DeliveryType);
-                  setErrors((prevErrors) => ({ ...prevErrors, type: "" }));
-                }}
-              >
-                <SelectTrigger className="w-full border-2 text-gray-700 border-gray-200 rounded-sm p-2">
-                  <SelectValue placeholder="Selecione um tipo entrega" />
-                </SelectTrigger>
-                <SelectContent>
-                  {Object.values(DeliveryType).map((dest) => (
-                    <SelectItem key={dest} value={dest}>
-                      {dest}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {errors.type && (
-                <p className="text-red-500 text-sm mt-1">{errors.type}</p>
-              )}
-            </span>
-          </div>
+          <SelectField
+            label="Tipo"
+            value={type}
+            onChange={(value) => {
+              setType(value as DeliveryType);
+              setErrors((prevErrors) => ({ ...prevErrors, type: "" }));
+            }}
+            options={Object.values(DeliveryType).map((dest) => ({
+              label: dest,
+              value: dest,
+            }))}
+            placeholder="Selecione um tipo entrega"
+            error={errors.type}
+          />
 
           {type === DeliveryType.Eletronico && (
             <div className="flex items-center mt-6">
@@ -331,88 +288,64 @@ export default function CreateDelivery() {
 
         <h2 className="text-lg font-semibold mt-4">Caminhão</h2>
         <div className="border-t border-gray-200 py-4">
-          <div className="flex items-center justify-between my-4">
-            <span className="text-gray-600 w-1/3">Placa</span>
-            <span className="font-medium w-2/3 text-left">
-              <Select
-                value={truckId?.toString()}
-                onValueChange={(value) => {
-                  handleTruckChange(value);
-                  setErrors((prevErrors) => ({ ...prevErrors, truckId: "" }));
-                }}
-              >
-                <SelectTrigger className="w-full border-2 text-gray-700 border-gray-200 rounded-sm p-2">
-                  <SelectValue placeholder="Escolha um veículo" />
-                </SelectTrigger>
-                <SelectContent>
-                  {trucks &&
-                    trucks.map((truck) => (
-                      <SelectItem key={truck.id} value={truck.id.toString()}>
-                        {truck.licensePlate}
-                      </SelectItem>
-                    ))}
-                </SelectContent>
-              </Select>
-              {errors.truckId && (
-                <p className="text-red-500 text-sm mt-1">{errors.truckId}</p>
-              )}
-            </span>
-          </div>
+          <SelectField
+            label="Placa"
+            value={truckId?.toString() || ""}
+            onChange={(value) => {
+              handleTruckChange(value);
+              setErrors((prevErrors) => ({ ...prevErrors, truckId: "" }));
+            }}
+            options={
+              trucks
+                ? trucks.map((truck) => ({
+                    label: truck.licensePlate,
+                    value: truck.id.toString(),
+                  }))
+                : []
+            }
+            placeholder="Escolha um veículo"
+            error={errors.truckId}
+          />
 
-          <div className="flex items-center justify-between my-4">
-            <span className="text-gray-600 w-1/3">Modelo</span>
-            <span className="font-medium w-2/3 text-left">
-              <Input
-                type="text"
-                value={truckModel}
-                readOnly
-                className="border-2 rounded-sm border-gray-200 p-2 text-gray-700 w-full bg-gray-100"
-              />
-            </span>
-          </div>
+          <InputField
+            label="Modelo"
+            value={truckModel}
+            onChange={() => {}}
+            readOnly
+            error=""
+            className="my-4"
+          />
         </div>
 
         <h2 className="text-lg font-semibold mt-2">Motorista</h2>
         <div className="border-t border-gray-200 py-4">
-          <div className="flex items-center justify-between my-4">
-            <span className="text-gray-600 w-1/3">Nome</span>
-            <span className="font-medium w-2/3 text-left">
-              <Select
-                value={driverId?.toString()}
-                onValueChange={(value) => {
-                  handleDriverChange(value);
-                  setErrors((prevErrors) => ({ ...prevErrors, driverId: "" }));
-                }}
-              >
-                <SelectTrigger className="w-full border-2 text-gray-700 border-gray-200 rounded-sm p-2">
-                  <SelectValue placeholder="Escolha um notorista" />
-                </SelectTrigger>
-                <SelectContent>
-                  {drivers &&
-                    drivers.map((driver) => (
-                      <SelectItem key={driver.id} value={driver.id.toString()}>
-                        {driver.name}
-                      </SelectItem>
-                    ))}
-                </SelectContent>
-              </Select>
-              {errors.driverId && (
-                <p className="text-red-500 text-sm mt-1">{errors.driverId}</p>
-              )}
-            </span>
-          </div>
+          <SelectField
+            label="Nome"
+            value={driverId?.toString() || ""}
+            onChange={(value) => {
+              handleDriverChange(value);
+              setErrors((prevErrors) => ({ ...prevErrors, driverId: "" }));
+            }}
+            options={
+              drivers
+                ? drivers.map((driver) => ({
+                    label: driver.name,
+                    value: driver.id.toString(),
+                  }))
+                : []
+            }
+            placeholder="Escolha um motorista"
+            error={errors.driverId}
+          />
 
-          <div className="flex items-center justify-between my-4">
-            <span className="text-gray-600 w-1/3">CNH</span>
-            <span className="font-medium w-2/3 text-left">
-              <Input
-                type="text"
-                value={driverLicense}
-                readOnly
-                className="border-2 rounded-sm border-gray-200 p-2 w-full bg-gray-100"
-              />
-            </span>
-          </div>
+          <InputField
+            label="CNH"
+            value={driverLicense}
+            onChange={() => {}}
+            readOnly
+            error=""
+            className="my-4"
+          />
         </div>
       </form>
     </div>

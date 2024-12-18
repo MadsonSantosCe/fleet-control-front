@@ -16,7 +16,10 @@ import { Driver } from "@/types/Driver";
 import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
 import { inputDate } from "@/utils/stringUtils";
-import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
+import CurrencyInput from "react-currency-input-field";
+import InputField from "@/app/components/forms/InputField";
+import SelectField from "@/app/components/forms/SelectField";
 import {
   Select,
   SelectContent,
@@ -24,8 +27,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
-import CurrencyInput from "react-currency-input-field";
 
 interface DeliveryDetailsProps {
   params: Promise<{ id: string }>;
@@ -54,7 +55,7 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
   const [driverId, setDriverId] = useState<number | null>(null);
   const [driverName, setDriverName] = useState("");
   const [driverLicense, setDriverLicense] = useState("");
-  const [deliveryId, setdeliveryId] = useState<number>(0);
+  const [deliveryId, setDeliveryId] = useState<number>(0);
   const [deliveryTime, setDeliveryTime] = useState<string>("");
   const [driversFetched, setDriversFetched] = useState(false);
   const [trucksFetched, setTrucksFetched] = useState(false);
@@ -62,6 +63,11 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
 
   const [errors, setErrors] = useState({
     value: "",
+    deliveryTime: "",
+    destination: "",
+    type: "",
+    truckId: "",
+    driverId: "",
   });
 
   const router = useRouter();
@@ -69,13 +75,13 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
   useEffect(() => {
     const fetchDelivery = async () => {
       const id = Number((await params).id);
-      setdeliveryId(id);
+      setDeliveryId(id);
 
       if (!isNaN(id)) {
         const deliveryData = await getDeliveryById(id);
         setDelivery(deliveryData);
 
-        setDeliveryTime(deliveryData.deliveryTime.toLocaleString());
+        setDeliveryTime(inputDate(new Date(deliveryData.deliveryTime)));
         setValue(deliveryData.value.toString());
         setDestination(deliveryData.destination);
         setType(deliveryData.type);
@@ -150,7 +156,7 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
     }
   }, [type]);
 
-  if (!delivery) return <p></p>;
+  if (!delivery) return <p>Carregando...</p>;
 
   const handleSubmit = async (): Promise<void> => {
     try {
@@ -163,6 +169,11 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
 
         setErrors({
           value: fieldErrors.value?.[0] ?? "",
+          deliveryTime: "",
+          destination: "",
+          type: "",
+          truckId: "",
+          driverId: "",
         });
         return;
       }
@@ -196,7 +207,7 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
     } catch (error) {
       toast({
         variant: "destructive",
-        title: "Ateção.",
+        title: "Atenção.",
         description: `${error}`,
         duration: 6000,
       });
@@ -215,7 +226,7 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
     }
   };
 
-  const formattedDate = deliveryTime ? inputDate(deliveryTime) : "";
+  const formattedDate = deliveryTime ? inputDate(new Date(deliveryTime)) : "";
 
   return (
     <div className="p-8 max-w-4xl mx-auto">
@@ -276,47 +287,38 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
             </span>
           </div>
 
-          <div className="flex items-center justify-between my-4">
-            <span className="text-gray-600 w-1/3">Destino</span>
-            <span className="font-medium w-2/3 text-left">
-              <Select
-                value={destination}
-                onValueChange={(value) => setDestination(value as Destinations)}
-              >
-                <SelectTrigger className="w-full border-2 border-gray-200 text-gray-700 rounded-sm p-2">
-                  <SelectValue placeholder="Selecione um destino" />
-                </SelectTrigger>
-                <SelectContent>
-                  {Object.values(Destinations).map((dest) => (
-                    <SelectItem key={dest} value={dest}>
-                      {dest}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </span>
-          </div>
+          <SelectField
+            label="Destino"
+            value={destination}
+            onChange={(value) => {
+              setDestination(value as Destinations);
+              setErrors((prevErrors) => ({
+                ...prevErrors,
+                destination: "",
+              }));
+            }}
+            options={Object.values(Destinations).map((dest) => ({
+              label: dest,
+              value: dest,
+            }))}
+            placeholder="Selecione um destino"
+            error={errors.destination}
+          />
 
-          <div className="flex items-center justify-between my-4">
-            <span className="text-gray-600 w-1/3">Tipo</span>
-            <span className="font-medium w-2/3 text-left">
-              <Select
-                value={type}
-                onValueChange={(value) => setType(value as DeliveryType)}
-              >
-                <SelectTrigger className="w-full border-2 border-gray-200 text-gray-700 rounded-sm p-2">
-                  <SelectValue placeholder="Selecione um tipo entrega" />
-                </SelectTrigger>
-                <SelectContent>
-                  {Object.values(DeliveryType).map((dest) => (
-                    <SelectItem key={dest} value={dest}>
-                      {dest}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </span>
-          </div>
+          <SelectField
+            label="Tipo"
+            value={type}
+            onChange={(value) => {
+              setType(value as DeliveryType);
+              setErrors((prevErrors) => ({ ...prevErrors, type: "" }));
+            }}
+            options={Object.values(DeliveryType).map((dest) => ({
+              label: dest,
+              value: dest,
+            }))}
+            placeholder="Selecione um tipo entrega"
+            error={errors.type}
+          />
 
           <div className="flex items-center justify-between mt-6">
             <span className="text-gray-600 w-1/3">Status</span>
@@ -349,8 +351,8 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
           </div>
         </div>
 
-        <h2 className="text-lg font-semibold mt-2">Caminhão</h2>
-        <div className="border-t border-gray-200 py-2">
+        <h2 className="text-lg font-semibold mt-4">Caminhão</h2>
+        <div className="border-t border-gray-200 py-4">
           <div className="flex items-center justify-between my-4">
             <span className="text-gray-600 w-1/3">Placa</span>
             <span className="font-medium w-2/3 text-left">
@@ -377,21 +379,18 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
             </span>
           </div>
 
-          <div className="flex items-center justify-between my-4">
-            <span className="text-gray-600 w-1/3">Modelo</span>
-            <span className="font-medium w-2/3 text-left">
-              <Input
-                type="text"
-                value={truckModel}
-                readOnly
-                className="border-2 rounded-sm border-gray-200 text-gray-700 p-2 w-full bg-gray-100"
-              />
-            </span>
-          </div>
+          <InputField
+            label="Modelo"
+            value={truckModel}
+            onChange={() => {}}
+            readOnly
+            error=""
+            className="my-4"
+          />
         </div>
 
         <h2 className="text-lg font-semibold mt-2">Motorista</h2>
-        <div className="border-t border-gray-200 py-2">
+        <div className="border-t border-gray-200 py-4">
           <div className="flex items-center justify-between my-4">
             <span className="text-gray-600 w-1/3">Nome</span>
             <span className="font-medium w-2/3 text-left">
@@ -421,17 +420,14 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
             </span>
           </div>
 
-          <div className="flex items-center justify-between my-4">
-            <span className="text-gray-600 w-1/3">CNH</span>
-            <span className="font-medium w-2/3 text-left">
-              <Input
-                type="text"
-                value={driverLicense}
-                readOnly
-                className="border-2 rounded-sm border-gray-200 p-2 w-full bg-gray-100 text-gray-700"
-              />
-            </span>
-          </div>
+          <InputField
+            label="CNH"
+            value={driverLicense}
+            onChange={() => {}}
+            readOnly
+            error=""
+            className="my-4"
+          />
         </div>
       </form>
     </div>
