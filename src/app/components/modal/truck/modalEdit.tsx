@@ -1,5 +1,3 @@
-// ModalEdit.tsx
-
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -88,7 +86,7 @@ export default function ModalEdit({ isOpen, onSave, onClose, id }: Props) {
           model: modelField,
           licensePlate: licensePlatefield,
         });
-        setErrors({ modelField: "", licensePlatefield: "" });              
+        setErrors({ modelField: "", licensePlatefield: "" });
 
         toast({
           variant: "success",

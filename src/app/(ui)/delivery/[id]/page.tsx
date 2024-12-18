@@ -1,4 +1,5 @@
 "use client";
+
 import { useEffect, useState } from "react";
 import { getDeliveryById } from "@/services/delivery";
 import { Delivery } from "@/types/Delivery";
@@ -143,7 +144,9 @@ export default function DeliveryDetailsPage({ params }: DeliveryDetailsProps) {
       <div className="border-t border-gray-200 py-6">
         <div className="flex items-center justify-between my-4">
           <span className="text-gray-600 w-1/3">Data</span>
-          <span className="font-medium w-2/3 text-left text-gray-700">{formattedDate}</span>
+          <span className="font-medium w-2/3 text-left text-gray-700">
+            {formattedDate}
+          </span>
         </div>
 
         <div className="flex items-center justify-between my-4">
@@ -162,7 +165,9 @@ export default function DeliveryDetailsPage({ params }: DeliveryDetailsProps) {
 
         <div className="flex items-center justify-between my-4">
           <span className="text-gray-600 w-1/3">Tipo</span>
-          <span className="font-medium w-2/3 text-left text-gray-700">{delivery.type}</span>
+          <span className="font-medium w-2/3 text-left text-gray-700">
+            {delivery.type}
+          </span>
         </div>
 
         <div className="flex items-center justify-between mt-4">

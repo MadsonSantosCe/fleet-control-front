@@ -67,7 +67,7 @@ export default function ModalAdd({ isOpen, onSave, onClose }: Props) {
           description: "Veículo criado com sucesso",
           duration: 4000,
         });
-        
+
         onSave();
       } catch (error: any) {
         toast({

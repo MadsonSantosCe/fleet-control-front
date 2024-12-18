@@ -1,5 +1,3 @@
-// ModalDelete.tsx
-
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -62,7 +60,7 @@ export default function ModalDelete({ isOpen, onSave, onClose, id }: Props) {
         description: "Veículo deletado com sucesso!",
         duration: 4000,
       });
-      
+
       onSave();
     } catch (error: any) {
       toast({

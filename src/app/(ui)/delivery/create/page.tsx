@@ -2,12 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { createDelivery } from "@/services/delivery";
-import {
-  Delivery,
-  DeliveryRequest,
-  DeliveryType,
-  Destinations,
-} from "@/types/Delivery";
+import { DeliveryRequest, DeliveryType, Destinations } from "@/types/Delivery";
 import { useRouter } from "next/navigation";
 import { getDrivers } from "@/services/driver";
 import { getTrucks } from "@/services/truck";

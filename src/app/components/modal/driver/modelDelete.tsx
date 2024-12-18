@@ -62,7 +62,7 @@ export default function ModalDelete({ isOpen, onSave, onClose, id }: Props) {
   const handleDelete = async () => {
     try {
       await fetchDeleteDriver(id);
-      
+
       toast({
         variant: "success",
         title: "Aviso",

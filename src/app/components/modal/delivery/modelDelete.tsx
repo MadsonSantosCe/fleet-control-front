@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -28,15 +28,15 @@ export default function ModalDelete({ isOpen, onSave, onClose, id }: Props) {
   const handleDelete = async () => {
     try {
       await fetchDeleteDelivery(id);
-      
+
       toast({
         variant: "success",
         title: "Aviso",
         description: "Entrega deletada com sucesso!",
         duration: 4000,
       });
-      
-      onSave()
+
+      onSave();
     } catch (error) {
       toast({
         variant: "destructive",

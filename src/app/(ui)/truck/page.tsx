@@ -13,7 +13,9 @@ import ModalDelete from "@/app/components/modal/truck/modelDelete";
 import { useToast } from "@/hooks/use-toast";
 
 export default function TruckPage() {
-  const [popupType, setPopupType] = useState<null | "add" | "edit" | "delete">(null);
+  const [popupType, setPopupType] = useState<null | "add" | "edit" | "delete">(
+    null
+  );
   const [selectedTruckId, setSelectedTruckId] = useState<number | null>(null);
   const [trucks, setTrucks] = useState<Truck[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -35,14 +37,16 @@ export default function TruckPage() {
         description: "Erro ao buscar os caminhões.",
         duration: 4000,
       });
-      
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleModalClose = () => setPopupType(null);
-  const handleModalOpen = (type: "add" | "edit" | "delete", truckId?: number) => {
+  const handleModalOpen = (
+    type: "add" | "edit" | "delete",
+    truckId?: number
+  ) => {
     setPopupType(type);
     if (truckId) setSelectedTruckId(truckId);
   };
@@ -86,14 +90,20 @@ export default function TruckPage() {
 
   const renderEmptyState = () => (
     <div className="flex flex-col items-center justify-center py-8">
-      <p className="text-gray-500 text-lg">Nada por aqui, cadastre um novo veículo</p>
+      <p className="text-gray-500 text-lg">
+        Nada por aqui, cadastre um novo veículo
+      </p>
     </div>
   );
 
   const renderModals = () => (
     <>
       {popupType === "add" && (
-        <ModalAdd onClose={handleModalClose} onSave={handleSave} isOpen={true} />
+        <ModalAdd
+          onClose={handleModalClose}
+          onSave={handleSave}
+          isOpen={true}
+        />
       )}
       {popupType === "edit" && selectedTruckId && (
         <ModalEdit
@@ -107,7 +117,7 @@ export default function TruckPage() {
         <ModalDelete
           onClose={handleModalClose}
           onSave={handleSave}
-          id={selectedTruckId}          
+          id={selectedTruckId}
           isOpen={true}
         />
       )}

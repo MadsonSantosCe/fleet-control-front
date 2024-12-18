@@ -2,7 +2,13 @@
 
 import { ReactNode, useState } from "react";
 import NavItem from "../components/ui/nav-item";
-import { faBox, faTruck, faUser, faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
+import {
+  faBox,
+  faTruck,
+  faUser,
+  faBars,
+  faTimes,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 
