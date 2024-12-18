@@ -51,7 +51,7 @@ export default function ModalDelete({ isOpen, onSave, onClose, id }: Props) {
     } catch (error: any) {
       toast({
         variant: "destructive",
-        title: "Ateção.",
+        title: "Ateção",
         description: `${error?.message}`,
         duration: 4000,
       });

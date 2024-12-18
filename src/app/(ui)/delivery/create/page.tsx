@@ -152,7 +152,7 @@ export default function CreateDelivery() {
         toast({
           variant: "success",
           title: "Aviso",
-          description: "Entrega criada com sucesso",
+          description: "Entrega criada com sucesso!",
           duration: 4000,
         });
 
@@ -161,7 +161,7 @@ export default function CreateDelivery() {
     } catch (error) {
       toast({
         variant: "destructive",
-        title: "Atenção.",
+        title: "Atenção",
         description: `${error}`,
         duration: 6000,
       });

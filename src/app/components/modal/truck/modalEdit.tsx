@@ -99,7 +99,7 @@ export default function ModalEdit({ isOpen, onSave, onClose, id }: Props) {
       } catch (error) {
         toast({
           variant: "destructive",
-          title: "Ateção.",
+          title: "Ateção",
           description: `${error}`,
           duration: 4000,
         });

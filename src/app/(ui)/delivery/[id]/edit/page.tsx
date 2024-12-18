@@ -196,7 +196,7 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
         toast({
           variant: "success",
           title: "Aviso",
-          description: "Entrega atualizada com sucesso",
+          description: "Entrega atualizada com sucesso!",
           duration: 4000,
         });
 
@@ -207,7 +207,7 @@ export default function EditDelivery({ params }: DeliveryDetailsProps) {
     } catch (error) {
       toast({
         variant: "destructive",
-        title: "Atenção.",
+        title: "Atenção",
         description: `${error}`,
         duration: 6000,
       });

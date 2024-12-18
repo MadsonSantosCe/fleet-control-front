@@ -64,7 +64,7 @@ export default function ModalAdd({ isOpen, onSave, onClose }: Props) {
         toast({
           variant: "success",
           title: "Aviso",
-          description: "Veículo criado com sucesso",
+          description: "Veículo criado com sucesso!",
           duration: 4000,
         });
 
@@ -72,7 +72,7 @@ export default function ModalAdd({ isOpen, onSave, onClose }: Props) {
       } catch (error: any) {
         toast({
           variant: "destructive",
-          title: "Ateção.",
+          title: "Ateção",
           description: `${error}`,
           duration: 4000,
         });
